@@ -3,11 +3,10 @@
  * https://github.com/facebook/react-native
  *
  * @format
- * @flow strict-local
  */
 
-import React from 'react';
-import type {Node} from 'react';
+import React, {useState} from 'react';
+import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -16,6 +15,7 @@ import {
   Text,
   useColorScheme,
   View,
+  Button,
 } from 'react-native';
 
 import {
@@ -26,7 +26,11 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-const Section = ({children, title}): Node => {
+type SectionProps = PropsWithChildren<{
+  title: string;
+}>;
+
+function Section({children, title}: SectionProps): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   return (
     <View style={styles.sectionContainer}>
@@ -50,14 +54,33 @@ const Section = ({children, title}): Node => {
       </Text>
     </View>
   );
-};
+}
 
-const App: () => Node = () => {
+function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  //   let sp_dc = 'm9imVUYoY3Zm5RkPVV3-VI4FM3Teg6kjTliCg5zLm_tav';
+
+  const buddyList = require('spotify-buddylist');
+
+  // TODO: get this function working
+  async function getFriendActivity() {
+    console.log('here 1');
+    const spDcCookie = 'm9imVUYoY3Zm5RkPVV3-VI4FM3Teg6kjTliCg5zLm_tav';
+
+    const {accessToken} = await buddyList.getWebAccessToken(spDcCookie);
+    console.log('here 1.5');
+    console.log(accessToken);
+    const friendActivity = await buddyList.getFriendActivity(accessToken);
+
+    console.log('here 2');
+    // console.log(accessToken)
+    // console.log(friendActivity)
+  }
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -65,30 +88,16 @@ const App: () => Node = () => {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
+        <Button
+          onPress={() => {
+            console.log('hello');
+            getFriendActivity();
+          }}
+          title="friendActivity"></Button>
       </ScrollView>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   sectionContainer: {
