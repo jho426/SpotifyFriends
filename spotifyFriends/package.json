@@ -10,8 +10,10 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "react": "17.0.2",
-    "react-native": "0.68.2"
+    "react": "18.2.0",
+    "react-native": "0.71.6",
+    "spotify-buddylist": "^1.0.0",
+    "spotify-web-api-node": "^5.0.2"
   },
   "devDependencies": {
     "@babel/core": "7.22.5",
