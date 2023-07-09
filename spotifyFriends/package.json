@@ -11,38 +11,24 @@
   },
   "dependencies": {
     "react": "18.2.0",
-<<<<<<< HEAD
-    "react-native": "0.71.6"
-=======
     "react-native": "0.72.1",
     "spotify-buddylist": "^1.0.0",
     "spotify-web-api-node": "^5.0.2"
->>>>>>> initial-build
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
-<<<<<<< HEAD
-    "@react-native-community/eslint-config": "^3.2.0",
-    "@tsconfig/react-native": "^2.0.2",
-    "@types/jest": "^29.2.1",
-=======
     "@react-native/eslint-config": "^0.72.2",
     "@react-native/metro-config": "^0.72.7",
     "@tsconfig/react-native": "^3.0.0",
     "@types/metro-config": "^0.76.3",
->>>>>>> initial-build
     "@types/react": "^18.0.24",
     "@types/react-test-renderer": "^18.0.0",
     "babel-jest": "^29.2.1",
     "eslint": "^8.19.0",
     "jest": "^29.2.1",
-<<<<<<< HEAD
-    "metro-react-native-babel-preset": "0.73.9",
-=======
     "metro-react-native-babel-preset": "0.76.5",
->>>>>>> initial-build
     "prettier": "^2.4.1",
     "react-test-renderer": "18.2.0",
     "typescript": "4.8.4"

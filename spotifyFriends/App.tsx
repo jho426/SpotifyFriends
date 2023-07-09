@@ -5,11 +5,7 @@
  * @format
  */
 
-<<<<<<< HEAD
-import React from 'react';
-=======
 import React, {useState} from 'react';
->>>>>>> initial-build
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,

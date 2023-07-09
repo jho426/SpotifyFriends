@@ -1,10 +1,5 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
-<<<<<<< HEAD
-
-import com.android.build.OutputFile
-=======
->>>>>>> initial-build
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -16,13 +11,8 @@ react {
     // root = file("../")
     //   The folder where the react-native NPM package is. Default is ../node_modules/react-native
     // reactNativeDir = file("../node_modules/react-native")
-<<<<<<< HEAD
-    //   The folder where the react-native Codegen package is. Default is ../node_modules/react-native-codegen
-    // codegenDir = file("../node_modules/react-native-codegen")
-=======
     //   The folder where the react-native Codegen package is. Default is ../node_modules/@react-native/codegen
     // codegenDir = file("../node_modules/@react-native/codegen")
->>>>>>> initial-build
     //   The cli.js file which is the React Native CLI entrypoint. Default is ../node_modules/react-native/cli.js
     // cliFile = file("../node_modules/react-native/cli.js")
 
@@ -61,17 +51,6 @@ react {
 }
 
 /**
-<<<<<<< HEAD
- * Set this to true to create four separate APKs instead of one,
- * one for each native architecture. This is useful if you don't
- * use App Bundles (https://developer.android.com/guide/app-bundle/)
- * and want to have separate APKs to upload to the Play Store.
- */
-def enableSeparateBuildPerCPUArchitecture = false
-
-/**
-=======
->>>>>>> initial-build
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
  */
 def enableProguardInReleaseBuilds = false
@@ -89,19 +68,6 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
-<<<<<<< HEAD
-/**
- * Private function to get the list of Native Architectures you want to build.
- * This reads the value from reactNativeArchitectures in your gradle.properties
- * file and works together with the --active-arch-only flag of react-native run-android.
- */
-def reactNativeArchitectures() {
-    def value = project.getProperties().get("reactNativeArchitectures")
-    return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
-}
-
-=======
->>>>>>> initial-build
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -114,18 +80,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-<<<<<<< HEAD
-    }
-
-    splits {
-        abi {
-            reset()
-            enable enableSeparateBuildPerCPUArchitecture
-            universalApk false  // If true, also generate a universal APK
-            include (*reactNativeArchitectures())
-        }
-=======
->>>>>>> initial-build
     }
     signingConfigs {
         debug {
@@ -152,11 +106,6 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-<<<<<<< HEAD
-
-    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
-=======
->>>>>>> initial-build
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
