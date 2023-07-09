@@ -95,22 +95,12 @@ function App(): JSX.Element {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
-<<<<<<< HEAD
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <LearnMoreLinks />
-        </View>
-=======
         <Button
           onPress={() => {
             console.log('hello');
             getFriendActivity();
           }}
           title="friendActivity"></Button>
->>>>>>> initial-build
       </ScrollView>
     </SafeAreaView>
   );
