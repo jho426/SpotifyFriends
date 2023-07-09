@@ -1,4 +1,9 @@
 {
+<<<<<<< HEAD
     "extends": "@tsconfig/react-native/tsconfig.json"
   }
   
+=======
+  "extends": "@tsconfig/react-native/tsconfig.json"
+}
+>>>>>>> initial-build

@@ -5,7 +5,11 @@
  * @format
  */
 
+<<<<<<< HEAD
 import React from 'react';
+=======
+import React, {useState} from 'react';
+>>>>>>> initial-build
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -15,6 +19,7 @@ import {
   Text,
   useColorScheme,
   View,
+  Button,
 } from 'react-native';
 
 import {
@@ -62,6 +67,25 @@ function App(): JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  //   let sp_dc = 'm9imVUYoY3Zm5RkPVV3-VI4FM3Teg6kjTliCg5zLm_tav';
+
+  const buddyList = require('spotify-buddylist');
+
+  // TODO: get this function working
+  async function getFriendActivity() {
+    console.log('here 1');
+    const spDcCookie = 'm9imVUYoY3Zm5RkPVV3-VI4FM3Teg6kjTliCg5zLm_tav';
+
+    const {accessToken} = await buddyList.getWebAccessToken(spDcCookie);
+    console.log('here 1.5');
+    console.log(accessToken);
+    const friendActivity = await buddyList.getFriendActivity(accessToken);
+
+    console.log('here 2');
+    // console.log(accessToken)
+    // console.log(friendActivity)
+  }
+
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar
@@ -71,6 +95,7 @@ function App(): JSX.Element {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}>
+<<<<<<< HEAD
         <Header />
         <View
           style={{
@@ -78,6 +103,14 @@ function App(): JSX.Element {
           }}>
           <LearnMoreLinks />
         </View>
+=======
+        <Button
+          onPress={() => {
+            console.log('hello');
+            getFriendActivity();
+          }}
+          title="friendActivity"></Button>
+>>>>>>> initial-build
       </ScrollView>
     </SafeAreaView>
   );
