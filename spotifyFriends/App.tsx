@@ -5,6 +5,7 @@
  * @format
  */
 
+import axios from 'axios';
 import React, {useState} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
@@ -63,14 +64,14 @@ function App(): JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const [sample, setSample] = useState("");
+  const [sample, setSample] = useState('');
 
   // TODO: get this function working
   async function getFriendActivity() {
     var myHeaders = new Headers();
     myHeaders.append(
       'Cookie',
-      'sp_dc=AQAtOSb9r-paSlmCcnGavPOq-wOaAfUAaqGTbpuaExXFGNUh1ggx3rqVKiR2W_L43GVYBnbJXNyN_V0ugJDWPbQjOywg5fFuc6I0T16dm_nqj36yWsgLTZC_hywo5zL8Z5MiZFfC7sXFvijI9tkxMmMbwxz7XqcB; sp_t=ee577364167bc472a3d4fdf5d65c9316',
+      'sp_dc=AQAtOSb9r-paSlmCcnGavPOq-wOaAfUAaqGTbpuaExXFGNUh1ggx3rqVKiR2W_L43GVYBnbJXNyN_V0ugJDWPbQjOywg5fFuc6I0T16dm_nqj36yWsgLTZC_hywo5zL8Z5MiZFfC7sXFvijI9tkxMmMbwxz7XqcB; sp_t=6bcde1423680832d71e3996fe4457a08',
     );
 
     var requestOptions = {
@@ -89,23 +90,25 @@ function App(): JSX.Element {
   }
 
   async function example() {
-    const accessToken= 'BQCe0wfGCBYOdpYKSfz18GrtZ4zFf4-JWWoz6Qoal6g9y-Drgs3SogKe10BbxnpqHB9PACjyl7_lOSe4B8LsESMZ7slfhWhCEiJeI1CGkmU9fn3EpTXE36Y9tb9t871bhVnLrvRGx3nQTpBYcMSB5GgasvTfv0TedJknr4e2AFBvrnGdKEDU-yoWQMrDBCe82p98Bv0rbfPzo97hPzlEgPI3uS-TEbnMK5t77toWZ5zTUnzNtulBn_jW2bOqPFDS5Trhxr9U8suO5DXUqfsNYEIRpaPpZsoVl_NXRlHX7cj90GRpPw3K7RdlMR8JAaZkVx1M0OcHUHrfzvoUAYFA'
-    console.log(accessToken);
-    const res = await fetch(
-      'https://guc-spclient.spotify.com/presence-view/v1/buddylist',
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
+    var myHeaders = new Headers();
+    myHeaders.append(
+      'Cookie',
+      'sp_dc=AQABbS-f7lknfF0z12vLlBo6trJZy0_SoEzSrXp3sqBm02FTDw0zi27g0iqJyHx4Sx5r4QVBEgkdcbXAiSG1r2oZxJJO-ny1CifPUFXXR2ZLRAJRyR72JaYHpj-CW9cCQ6qWBPn2WhRSCByvaEEd-ltUqx6W4x7c; sp_t=6bcde1423680832d71e3996fe4457a08',
     );
 
-    console.log(JSON.stringify(res.json(), null, 2));
-    console.log(res)
-    
-    setSample(JSON.stringify(res.json()));
-    return res.json()
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow',
+    };
 
+    fetch(
+      'https://open.spotify.com/get_access_token?reason=transport&productType=web_player',
+      requestOptions,
+    )
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
   }
 
   return (
@@ -120,7 +123,7 @@ function App(): JSX.Element {
             example();
           }}
           title="friendActivity"></Button>
-          <Text>{sample}</Text>
+        <Text>{sample}</Text>
       </ScrollView>
     </SafeAreaView>
   );
