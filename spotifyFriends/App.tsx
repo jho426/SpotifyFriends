@@ -63,23 +63,49 @@ function App(): JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  //   let sp_dc = 'm9imVUYoY3Zm5RkPVV3-VI4FM3Teg6kjTliCg5zLm_tav';
-
-  const buddyList = require('spotify-buddylist');
+  const [sample, setSample] = useState("");
 
   // TODO: get this function working
   async function getFriendActivity() {
-    console.log('here 1');
-    const spDcCookie = 'm9imVUYoY3Zm5RkPVV3-VI4FM3Teg6kjTliCg5zLm_tav';
+    var myHeaders = new Headers();
+    myHeaders.append(
+      'Cookie',
+      'sp_dc=AQAtOSb9r-paSlmCcnGavPOq-wOaAfUAaqGTbpuaExXFGNUh1ggx3rqVKiR2W_L43GVYBnbJXNyN_V0ugJDWPbQjOywg5fFuc6I0T16dm_nqj36yWsgLTZC_hywo5zL8Z5MiZFfC7sXFvijI9tkxMmMbwxz7XqcB; sp_t=ee577364167bc472a3d4fdf5d65c9316',
+    );
 
-    const {accessToken} = await buddyList.getWebAccessToken(spDcCookie);
-    console.log('here 1.5');
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow',
+    };
+
+    fetch(
+      'https://open.spotify.com/get_access_token?reason=transport&productType=web_player',
+      requestOptions,
+    )
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+  }
+
+  async function example() {
+    const accessToken= 'BQCe0wfGCBYOdpYKSfz18GrtZ4zFf4-JWWoz6Qoal6g9y-Drgs3SogKe10BbxnpqHB9PACjyl7_lOSe4B8LsESMZ7slfhWhCEiJeI1CGkmU9fn3EpTXE36Y9tb9t871bhVnLrvRGx3nQTpBYcMSB5GgasvTfv0TedJknr4e2AFBvrnGdKEDU-yoWQMrDBCe82p98Bv0rbfPzo97hPzlEgPI3uS-TEbnMK5t77toWZ5zTUnzNtulBn_jW2bOqPFDS5Trhxr9U8suO5DXUqfsNYEIRpaPpZsoVl_NXRlHX7cj90GRpPw3K7RdlMR8JAaZkVx1M0OcHUHrfzvoUAYFA'
     console.log(accessToken);
-    const friendActivity = await buddyList.getFriendActivity(accessToken);
+    const res = await fetch(
+      'https://guc-spclient.spotify.com/presence-view/v1/buddylist',
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+    );
 
-    console.log('here 2');
-    // console.log(accessToken)
-    // console.log(friendActivity)
+    console.log(JSON.stringify(res.json(), null, 2));
+    console.log(res)
+    
+    setSample(JSON.stringify(res.json()));
+    return res.json()
+
   }
 
   return (
@@ -91,9 +117,10 @@ function App(): JSX.Element {
         <Button
           onPress={() => {
             console.log('hello');
-            getFriendActivity();
+            example();
           }}
           title="friendActivity"></Button>
+          <Text>{sample}</Text>
       </ScrollView>
     </SafeAreaView>
   );
