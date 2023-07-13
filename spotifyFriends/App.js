@@ -108,11 +108,11 @@ export default function App() {
 
   return (
     <>
-      <Text>PLACE HOLDER</Text>
-      <Text>PLACE HOLDER</Text>
-      <Text>PLACE HOLDER</Text>
-      <Text>PLACE HOLDER</Text>
-      <Text>PLACE HOLDER</Text>
+      <Text>PLACE HOLDER 1</Text>
+      <Text>PLACE HOLDER 2</Text>
+      <Text>PLACE HOLDER 3</Text>
+      <Text>PLACE HOLDER 4</Text>
+      <Text>PLACE HOLDER 5</Text>
       <Button
         disabled={!request}
         title="Login"
