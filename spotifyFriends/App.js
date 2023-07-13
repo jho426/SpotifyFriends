@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import * as WebBrowser from "expo-web-browser";
+import Friend from "./Models"
 import {
   makeRedirectUri,
   ResponseType,
@@ -17,6 +18,7 @@ const discovery = {
 
 export default function App() {
   const [webAccessToken, setWebAccessToken] = useState(null);
+  const [friendActivity, setFriendActivity] = useState(null);
 
   const [request, response, promptAsync] = useAuthRequest(
     {
@@ -68,7 +70,7 @@ export default function App() {
   const getFriendActivity = async () => {
     var myHeaders = new Headers();
     console.log("here: ", webAccessToken)
-    myHeaders.append("Authorization", "Bearer ${webAccessToken}");
+    myHeaders.append("Authorization", `Bearer ${webAccessToken}`);
     myHeaders.append("Cookie", "sp_t=ee577364167bc472a3d4fdf5d65c9316");
 
     var requestOptions = {
@@ -77,19 +79,40 @@ export default function App() {
       redirect: 'follow'
     };
 
-    fetch("https://guc-spclient.spotify.com/presence-view/v1/buddylist?reason=transport&productType=web_player&Cookie=sp_dc= m9imVUYoY3Zm5RkPVV3-VI4FM3Teg6kjTliCg5zLm_tav", requestOptions)
-      .then(response => response.text())
-      .then(result => console.log(result))
-      .catch(error => console.log('error', error));
+    try {
+      const response = await fetch(
+        "https://guc-spclient.spotify.com/presence-view/v1/buddylist?reason=transport&productType=web_player&Cookie=sp_dc= m9imVUYoY3Zm5RkPVV3-VI4FM3Teg6kjTliCg5zLm_tav", 
+        requestOptions
+      );
+  
+      const result = await response.json();
+      setFriendActivity(result);
+    } catch (error) {
+      console.log("error", error);
+    }
+  }
+
+  const parseFriendActivity = async () => {
+    const friends = friendActivity.friends;
+    for (const friend of friends) {
+      const friendObj = new Friend(friend.timestamp, friend.user, friend.track);
+
+      console.log("Friend:", friendObj.user.name);
+      console.log("TimeStamp:", friendObj.timestamp);
+      console.log("Track:", friendObj.track.name);
+      console.log("Album:", friendObj.track.album.name);
+      console.log("Artist:", friendObj.artist.name);
+      console.log("----------------------------------");
+    }
   }
 
   return (
     <>
-      <Text>PLACE HOLDER</Text>
-      <Text>PLACE HOLDER</Text>
-      <Text>PLACE HOLDER</Text>
-      <Text>PLACE HOLDER</Text>
-      <Text>PLACE HOLDER</Text>
+      <Text>PLACE HOLDER 1</Text>
+      <Text>PLACE HOLDER 2</Text>
+      <Text>PLACE HOLDER 3</Text>
+      <Text>PLACE HOLDER 4</Text>
+      <Text>PLACE HOLDER 5</Text>
       <Button
         disabled={!request}
         title="Login"
@@ -107,6 +130,12 @@ export default function App() {
         title = "Get Activity"
         onPress={() => {
           getFriendActivity();
+        }}
+      />
+       <Button 
+        title = "Parse Activity"
+        onPress={() => {
+          parseFriendActivity();
         }}
       />
     </>
