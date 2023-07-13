@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import * as WebBrowser from "expo-web-browser";
 import {
   makeRedirectUri,
@@ -17,6 +17,7 @@ const discovery = {
 
 export default function App() {
   const [webAccessToken, setWebAccessToken] = useState(null);
+  const [webFriends, setWebFriends] = useState(null);
 
   const [request, response, promptAsync] = useAuthRequest(
     {
@@ -55,33 +56,40 @@ export default function App() {
         "https://open.spotify.com/get_access_token?reason=transport&productType=web_player",
         requestOptions
       );
-  
+
       const result = await response.json();
       const accessToken = result.accessToken;
       setWebAccessToken(accessToken);
     } catch (error) {
       console.log("error", error);
     }
-
   };
 
   const getFriendActivity = async () => {
     var myHeaders = new Headers();
-    console.log("here: ", webAccessToken)
-    myHeaders.append("Authorization", "Bearer ${webAccessToken}");
+    console.log("here: ", webAccessToken);
+    myHeaders.append("Authorization", `Bearer ${webAccessToken}`);
     myHeaders.append("Cookie", "sp_t=ee577364167bc472a3d4fdf5d65c9316");
 
     var requestOptions = {
-      method: 'GET',
+      method: "GET",
       headers: myHeaders,
-      redirect: 'follow'
+      redirect: "follow",
     };
 
-    fetch("https://guc-spclient.spotify.com/presence-view/v1/buddylist?reason=transport&productType=web_player&Cookie=sp_dc= m9imVUYoY3Zm5RkPVV3-VI4FM3Teg6kjTliCg5zLm_tav", requestOptions)
-      .then(response => response.text())
-      .then(result => console.log(result))
-      .catch(error => console.log('error', error));
-  }
+    try {
+      const response = await fetch(
+        "https://guc-spclient.spotify.com/presence-view/v1/buddylist?reason=transport&productType=web_player&Cookie=sp_dc= m9imVUYoY3Zm5RkPVV3-VI4FM3Teg6kjTliCg5zLm_tav",
+        requestOptions
+      );
+
+      const result = await response.json();
+      const friends = JSON.stringify(result);
+      setWebFriends(friends);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
 
   return (
     <>
@@ -103,12 +111,14 @@ export default function App() {
           getAccessToken();
         }}
       />
-      <Button 
-        title = "Get Activity"
+      <Button
+        title="Get Activity"
         onPress={() => {
           getFriendActivity();
         }}
       />
+      <Text>{webAccessToken}</Text>
+      <Text>{webFriends}</Text>
     </>
   );
 }
