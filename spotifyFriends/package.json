@@ -15,7 +15,9 @@
     "expo-status-bar": "~1.4.4",
     "expo-web-browser": "~12.1.1",
     "react": "18.2.0",
-    "react-native": "0.71.8"
+    "react-native": "0.71.8",
+    "spotify-buddylist": "^1.0.0",
+    "spotify-web-api-node": "^5.0.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"
