@@ -8,6 +8,26 @@ export const BackendProvider = ({children}) => {
   const [sp_dc, setSp_dc] = useState('');
   const [accessToken, setAccessToken] = useState('');
   const [friendActivity, setFriendActivity] = useState('');
+  const [friendsArray, setFriendsArray] = useState([]);
+
+  /*
+   * This function will call all the functions needed to get the user's friend activity
+   * @param {} none
+   */
+  const master_get_activity = async () => {
+    for (let i = 0; i < 5 && friendsArray.length === 0; i++) {
+      try {
+        await get_sp_dc();
+        await get_access_token(sp_dc);
+        await get_activity(accessToken);
+        await parseFriendActivity(friendActivity);
+      } catch (error) {
+        throw error;
+      }
+    }
+
+    return friendsArray;
+  };
 
   /*
    * This function gets the sp_dc cookie and returns it as a string
@@ -76,19 +96,22 @@ export const BackendProvider = ({children}) => {
   /*
    * This function parses the friend activity data
    */
-
   const parseFriendActivity = async friendActivity => {
     const parsedData = JSON.parse(friendActivity);
     const friends = parsedData.friends;
+    let localFriendsArray = [];
 
     friends.reverse().forEach(friend => {
       const friendObj = new Friend(friend.timestamp, friend.user, friend.track);
-
+      localFriendsArray.push(friendObj);
       console.log(`Timestamp: ${friendObj.timestamp}`);
       console.log(`User: ${friendObj.user.name}`);
       console.log(`Track: ${friendObj.track.name}`);
       console.log('-------------------------------------');
     });
+
+    setFriendsArray(localFriendsArray);
+    return friendsArray;
   };
 
   /*
@@ -124,6 +147,7 @@ export const BackendProvider = ({children}) => {
         clear_cookies,
         get_cookies,
         parseFriendActivity,
+        master_get_activity,
       }}>
       {children}
     </BackendContext.Provider>

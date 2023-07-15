@@ -1,14 +1,17 @@
 import React from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, Image } from 'react-native';
 
 const StartScreen = ({ navigation }) => {
   return (
-    <View>
-      <Text className = "text-red-500 ">Welcome to the Start Screen!</Text>
-      <Button
-        title="Login to Spotify"
-        onPress={() => navigation.navigate('Login')}
-      />
+    <View className = "bg-white h-full">
+      <Text>Welcome to the Start Screen!</Text>
+      <View className = "bg-white w-[200px] border rounded-2xl">
+      <Image source={require('../assets/login.png')} />
+        <Button className = ""
+            title="Login to Spotify"
+            onPress={() => navigation.navigate('Login')}
+        />
+      </View>
     </View>
   );
 }

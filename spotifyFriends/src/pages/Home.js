@@ -15,7 +15,8 @@ const HomeScreen = ({navigation}) => {
     get_activity,
     clear_cookies,
     get_cookies,
-    parseFriendActivity
+    parseFriendActivity,
+    master_get_activity
   } = useContext(BackendContext);
 
   return (
@@ -62,6 +63,12 @@ const HomeScreen = ({navigation}) => {
         title="Parse Activity"
         onPress={async () => {
           await parseFriendActivity(friendActivity);
+        }}
+      />
+            <Button
+        title="Master"
+        onPress={async () => {
+          await master_get_activity(friendActivity);
         }}
       />
     </View>
