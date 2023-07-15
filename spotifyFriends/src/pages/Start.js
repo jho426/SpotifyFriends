@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, Text, Button } from 'react-native';
 
-function StartScreen({ navigation }) {
+const StartScreen = ({ navigation }) => {
   return (
     <View>
-      <Text>Welcome to the Start Screen!</Text>
+      <Text className = "text-red-500 ">Welcome to the Start Screen!</Text>
       <Button
-        title="Go to Login"
+        title="Login to Spotify"
         onPress={() => navigation.navigate('Login')}
       />
     </View>
