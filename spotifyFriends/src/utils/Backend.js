@@ -9,12 +9,15 @@ export const BackendProvider = ({children}) => {
   const [accessToken, setAccessToken] = useState('');
   const [friendActivity, setFriendActivity] = useState('');
   const [friendsArray, setFriendsArray] = useState([]);
+
   /*
    * This function will call all the functions needed to get the user's friend activity
    * @param {} none
    */
   const master_get_activity = async () => {
-    for (let i = 0; i < 5 && friendsArray.length === 0; i++) {
+    for (let i = 0; i < 5; i++) {
+      console.log(`Attempt ${i}`);
+      console.log(friendsArray);
       try {
         await get_sp_dc();
         await get_access_token(sp_dc);
@@ -33,11 +36,11 @@ export const BackendProvider = ({children}) => {
    * @param {} none
    */
   const get_sp_dc = async () => {
-    CookieManager.getAll(true).then(cookies => {
-      setSp_dc(cookies.sp_dc.value);
-      console.log(sp_dc);
-      return sp_dc;
-    });
+    CookieManager.getAll(true)
+      .then(cookies => {
+        setSp_dc(cookies.sp_dc.value);
+        return sp_dc;
+      });
   };
 
   /*
@@ -45,7 +48,7 @@ export const BackendProvider = ({children}) => {
    * @param {string} sp_dc
    */
   const get_access_token = async sp_dc => {
-    await clear_cookies();
+    await soft_clear_cookies();
     var myHeaders = new Headers();
     myHeaders.append('Cookie', `sp_dc=${sp_dc};`);
 
@@ -103,10 +106,10 @@ export const BackendProvider = ({children}) => {
     friends.reverse().forEach(friend => {
       const friendObj = new Friend(friend.timestamp, friend.user, friend.track);
       localFriendsArray.push(friendObj);
-      console.log(`Timestamp: ${friendObj.timestamp}`);
-      console.log(`User: ${friendObj.user.name}`);
-      console.log(`Track: ${friendObj.track.name}`);
-      console.log('-------------------------------------');
+      //   console.log(`Timestamp: ${friendObj.timestamp}`);
+      //   console.log(`User: ${friendObj.user.name}`);
+      //   console.log(`Track: ${friendObj.track.name}`);
+      //   console.log('-------------------------------------');
     });
 
     setFriendsArray(localFriendsArray);
@@ -116,7 +119,16 @@ export const BackendProvider = ({children}) => {
   /*
    * This function clears all cookies and console.logs the result
    */
-  const clear_cookies = async () => {
+  const hard_clear_cookies = async () => {
+    CookieManager.clearAll(true).then(success => {
+      console.log('CookieManager.clearAll =>', success);
+    });
+  };
+
+  /*
+   * This function clears all cookies and console.logs the result
+   */
+  const soft_clear_cookies = async () => {
     CookieManager.clearAll().then(success => {
       console.log('CookieManager.clearAll =>', success);
     });
@@ -143,11 +155,12 @@ export const BackendProvider = ({children}) => {
         friendActivity,
         setFriendActivity,
         get_activity,
-        clear_cookies,
+        hard_clear_cookies,
+        soft_clear_cookies,
         get_cookies,
         parseFriendActivity,
         master_get_activity,
-        friendsArray
+        friendsArray,
       }}>
       {children}
     </BackendContext.Provider>

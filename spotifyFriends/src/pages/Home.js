@@ -13,11 +13,12 @@ const HomeScreen = ({navigation}) => {
     friendActivity,
     setFriendActivity,
     get_activity,
-    clear_cookies,
+    hard_clear_cookies,
+    soft_clear_cookies,
     get_cookies,
     parseFriendActivity,
     master_get_activity,
-    friendsArray
+    friendsArray,
   } = useContext(BackendContext);
 
   return (
@@ -34,9 +35,9 @@ const HomeScreen = ({navigation}) => {
         }}
       />
       <Button
-        title="Clear Cookies"
+        title="Hard Clear Cookies"
         onPress={async () => {
-          await clear_cookies();
+          await hard_clear_cookies();
         }}
       />
       <Button
@@ -66,7 +67,7 @@ const HomeScreen = ({navigation}) => {
           await parseFriendActivity(friendActivity);
         }}
       />
-        <Button
+      <Button
         title="Master"
         onPress={async () => {
           await master_get_activity(friendActivity);
