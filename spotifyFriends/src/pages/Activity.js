@@ -20,7 +20,7 @@ const ActivityScreen = ({ navigation }) => {
                         <Text className = "text-white text-ellipsis" key={item.id}>{item.track.name}</Text>
                         <Text className = "text-white text-ellipsis" key={item.id}>{item.track.context.name}</Text>
                     </View>
-                    <Text className = "text-white text-ellipsis" key={item.id}>{item.date.toLocaleString()}</Text>
+                    <Text className = "text-white text-ellipsis" key={item.id}>{item.timedifference}</Text>
                 </View>
             ))}
             </View>
