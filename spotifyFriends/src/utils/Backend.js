@@ -9,7 +9,6 @@ export const BackendProvider = ({children}) => {
   const [accessToken, setAccessToken] = useState('');
   const [friendActivity, setFriendActivity] = useState('');
   const [friendsArray, setFriendsArray] = useState([]);
-
   /*
    * This function will call all the functions needed to get the user's friend activity
    * @param {} none
@@ -148,6 +147,7 @@ export const BackendProvider = ({children}) => {
         get_cookies,
         parseFriendActivity,
         master_get_activity,
+        friendsArray
       }}>
       {children}
     </BackendContext.Provider>
