@@ -4,13 +4,19 @@ import {BackendContext} from '../utils/Backend';
 
 const ActivityScreen = ({ navigation }) => {
     const {
-        friendsArray
+        friendsArray, 
+        yourActivity
     } = useContext(BackendContext);
     
     return (
         <ScrollView className = "bg-[#121212] h-full">
             <Text className = "text-white text-3xl font-bold m-4">Good Morning,</Text>
-            <View className = "bg-[#232323] w-11/12 h-[100px] self-center rounded-xl m-4"></View>
+            <View className = "bg-[#232323] w-11/12 h-[100px] self-center rounded-xl m-4">
+                <Text className = "text-white text-ellipsis">{yourActivity.track.name}</Text>
+                <Text className = "text-white text-ellipsis">{yourActivity.track.album.name}</Text>
+                <Text className = "text-white text-ellipsis">{yourActivity.track.artists[0].name}</Text>
+                <Text className = "text-white text-ellipsis">{yourActivity.timedifference}</Text>
+            </View>
             <View className = "w-11/12 self-center">
             {friendsArray.map((item) => (
                 <View className = "h-[100px] flex flex-row gap-4 text-ellipsis">

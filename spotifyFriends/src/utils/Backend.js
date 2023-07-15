@@ -1,5 +1,6 @@
 import CookieManager from '@react-native-cookies/cookies';
 import Friend from './Friend';
+import You from './You'
 import {useState, createContext, useCallback} from 'react';
 
 export const BackendContext = createContext();
@@ -8,6 +9,7 @@ export const BackendProvider = ({children}) => {
   const [sp_dc, setSp_dc] = useState('');
   const [accessToken, setAccessToken] = useState('');
   const [friendActivity, setFriendActivity] = useState('');
+  const [yourActivity, setYourActivity] = useState({});
   const [friendsArray, setFriendsArray] = useState([]);
 
   /*
@@ -22,7 +24,7 @@ export const BackendProvider = ({children}) => {
         await get_sp_dc();
         await get_access_token(sp_dc);
         await get_activity(accessToken);
-        await parseFriendActivity(friendActivity);
+        await parse_friend_activity(friendActivity);
       } catch (error) {
         throw error;
       }
@@ -98,7 +100,7 @@ export const BackendProvider = ({children}) => {
   /*
    * This function parses the friend activity data
    */
-  const parseFriendActivity = async friendActivity => {
+  const parse_friend_activity = async friendActivity => {
     const parsedData = JSON.parse(friendActivity);
     const friends = parsedData.friends;
     let localFriendsArray = [];
@@ -143,6 +145,34 @@ export const BackendProvider = ({children}) => {
     });
   };
 
+  const get_your_activity = async access_token => {
+    var myHeaders = new Headers();
+    myHeaders.append('Authorization', `Bearer ${access_token}`);
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow',
+    };
+
+    fetch(
+      'https://api.spotify.com/v1/me/player/recently-played',
+      requestOptions,
+    )
+    .then(response => response.json())
+    .then(data => {
+      const firstTrack = data.items[0];
+      const youObj = new You(firstTrack.played_at, firstTrack.track);
+      setYourActivity(youObj)
+    })
+    .catch(error => {
+      console.log('Error:', error);
+    });
+
+
+    return yourActivity;
+  }
+
   return (
     <BackendContext.Provider
       value={{
@@ -158,9 +188,11 @@ export const BackendProvider = ({children}) => {
         hard_clear_cookies,
         soft_clear_cookies,
         get_cookies,
-        parseFriendActivity,
+        parse_friend_activity,
         master_get_activity,
         friendsArray,
+        get_your_activity,
+        yourActivity
       }}>
       {children}
     </BackendContext.Provider>
