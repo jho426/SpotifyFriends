@@ -1,6 +1,6 @@
 import CookieManager from '@react-native-cookies/cookies';
 import Friend from './Friend';
-import You from './You'
+import You from './You';
 import {useState, createContext, useCallback} from 'react';
 
 export const BackendContext = createContext();
@@ -16,21 +16,44 @@ export const BackendProvider = ({children}) => {
    * This function will call all the functions needed to get the user's friend activity
    * @param {} none
    */
-  const master_get_activity = async () => {
-    for (let i = 0; i < 5; i++) {
-      console.log(`Attempt ${i}`);
-      console.log(friendsArray);
-      try {
-        await get_sp_dc();
-        await get_access_token(sp_dc);
-        await get_activity(accessToken);
-        await parse_friend_activity(friendActivity);
-      } catch (error) {
-        throw error;
-      }
+  const master_get_activity = async time => {
+    if (time > 25) {
+      return [];
+    } else {
+        await pause();
+        await master_get_activity(time + 1);
     }
 
-    return friendsArray;
+    try {
+      console.log('Getting cookies');
+      const cookies = await get_cookies();
+      console.log('Getting sp_dc');
+      const sp_dc = await get_sp_dc();
+      console.log('Getting access token');
+      const accessToken = await get_access_token(sp_dc);
+      console.log('Getting activity');
+      const friendActivity = await get_activity(accessToken);
+      console.log('Parsing activity');
+      await get_your_activity(accessToken);
+      const friendsArray = await parse_friend_activity(friendActivity);
+
+      return friendsArray;
+    } catch (error) {
+      console.error('Error in master_get_activity:', error.message);
+      return []; // Return an empty array as a fallback value
+    }
+  };
+
+  const pause = async () => {
+    // Duration to pause in milliseconds
+    const duration = 500; // 3 seconds
+
+    await new Promise(resolve => {
+      setTimeout(resolve, duration);
+    });
+
+    // Function resumes execution after the pause
+    console.log('Function resumed after pause');
   };
 
   /*
@@ -38,11 +61,18 @@ export const BackendProvider = ({children}) => {
    * @param {} none
    */
   const get_sp_dc = async () => {
-    CookieManager.getAll(true)
-      .then(cookies => {
+    try {
+      const cookies = await CookieManager.getAll(true);
+      if (cookies && cookies.sp_dc && cookies.sp_dc.value) {
         setSp_dc(cookies.sp_dc.value);
         return sp_dc;
-      });
+      } else {
+        throw new Error('sp_dc cookie not found');
+      }
+    } catch (error) {
+      console.error('Error retrieving sp_dc cookie:', error);
+      return null;
+    }
   };
 
   /*
@@ -51,24 +81,41 @@ export const BackendProvider = ({children}) => {
    */
   const get_access_token = async sp_dc => {
     await soft_clear_cookies();
-    var myHeaders = new Headers();
+    const myHeaders = new Headers();
     myHeaders.append('Cookie', `sp_dc=${sp_dc};`);
 
-    var requestOptions = {
+    const requestOptions = {
       method: 'GET',
       headers: myHeaders,
       redirect: 'follow',
     };
-    fetch(
-      'https://open.spotify.com/get_access_token?reason=transport&productType=web_player',
-      requestOptions,
-    )
-      .then(response => response.json())
-      .then(result => {
-        setAccessToken(result.accessToken.toString());
-      })
-      .catch(error => console.log('error', error));
-    return accessToken;
+
+    try {
+      const response = await fetch(
+        'https://open.spotify.com/get_access_token?reason=transport&productType=web_player',
+        requestOptions,
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch access token');
+      }
+
+      const result = await response.json();
+
+      if (result.error) {
+        throw new Error('Invalid token');
+      }
+
+      const accessToken = result.accessToken.toString();
+      setAccessToken(accessToken);
+      return accessToken;
+    } catch (error) {
+      console.error('Error in get_access_token:', error.message);
+      // Handle the error here
+      // You can perform any desired error handling or recovery logic
+      // For example, displaying an error message to the user or fallback actions
+      return null; // Return null or an appropriate fallback value
+    }
   };
 
   /*
@@ -76,6 +123,7 @@ export const BackendProvider = ({children}) => {
    * @param {string} access_token
    */
   const get_activity = async access_token => {
+    soft_clear_cookies();
     var myHeaders = new Headers();
     myHeaders.append('Authorization', `Bearer ${access_token}`);
 
@@ -101,21 +149,32 @@ export const BackendProvider = ({children}) => {
    * This function parses the friend activity data
    */
   const parse_friend_activity = async friendActivity => {
-    const parsedData = JSON.parse(friendActivity);
-    const friends = parsedData.friends;
-    let localFriendsArray = [];
+    try {
+      if (!friendActivity) {
+        console.log('Friend activity is undefined.');
+        return;
+      }
 
-    friends.reverse().forEach(friend => {
-      const friendObj = new Friend(friend.timestamp, friend.user, friend.track);
-      localFriendsArray.push(friendObj);
-      //   console.log(`Timestamp: ${friendObj.timestamp}`);
-      //   console.log(`User: ${friendObj.user.name}`);
-      //   console.log(`Track: ${friendObj.track.name}`);
-      //   console.log('-------------------------------------');
-    });
+      const parsedData = JSON.parse(friendActivity);
+      const friends = parsedData.friends;
+      let localFriendsArray = [];
 
-    setFriendsArray(localFriendsArray);
-    return friendsArray;
+      friends.reverse().forEach(friend => {
+        const friendObj = new Friend(
+          friend.timestamp,
+          friend.user,
+          friend.track,
+        );
+        localFriendsArray.push(friendObj);
+      });
+
+      // Return the parsed friend activity
+      setFriendsArray(localFriendsArray);
+      return localFriendsArray;
+    } catch (error) {
+      // Handle the error
+      console.error('Error parsing friend activity:', error);
+    }
   };
 
   /*
@@ -140,8 +199,8 @@ export const BackendProvider = ({children}) => {
    * This function gets all cookies and console.logs the result
    */
   const get_cookies = async () => {
-    CookieManager.getAll(true).then(cookies => {
-      console.log('CookieManager.getAll =>', cookies);
+    await CookieManager.getAll(true).then(cookies => {
+      //   console.log('CookieManager.getAll =>', cookies);
     });
   };
 
@@ -159,19 +218,18 @@ export const BackendProvider = ({children}) => {
       'https://api.spotify.com/v1/me/player/recently-played',
       requestOptions,
     )
-    .then(response => response.json())
-    .then(data => {
-      const firstTrack = data.items[0];
-      const youObj = new You(firstTrack.played_at, firstTrack.track);
-      setYourActivity(youObj)
-    })
-    .catch(error => {
-      console.log('Error:', error);
-    });
-
+      .then(response => response.json())
+      .then(data => {
+        const firstTrack = data.items[0];
+        const youObj = new You(firstTrack.played_at, firstTrack.track);
+        setYourActivity(youObj);
+      })
+      .catch(error => {
+        console.log('Error:', error);
+      });
 
     return yourActivity;
-  }
+  };
 
   return (
     <BackendContext.Provider
@@ -192,7 +250,7 @@ export const BackendProvider = ({children}) => {
         master_get_activity,
         friendsArray,
         get_your_activity,
-        yourActivity
+        yourActivity,
       }}>
       {children}
     </BackendContext.Provider>

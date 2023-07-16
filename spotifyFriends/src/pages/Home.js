@@ -20,7 +20,7 @@ const HomeScreen = ({navigation}) => {
     master_get_activity,
     friendsArray,
     get_your_activity,
-    yourActivity
+    yourActivity,
   } = useContext(BackendContext);
 
   return (
@@ -69,7 +69,7 @@ const HomeScreen = ({navigation}) => {
           await parse_friend_activity(friendActivity);
         }}
       />
-        <Button
+      <Button
         title="Your Activity"
         onPress={async () => {
           await get_your_activity(accessToken);
@@ -78,7 +78,7 @@ const HomeScreen = ({navigation}) => {
       <Button
         title="Master"
         onPress={async () => {
-          await master_get_activity(friendActivity);
+            await master_get_activity(0);
         }}
       />
     </View>
