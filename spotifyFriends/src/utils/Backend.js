@@ -1,7 +1,8 @@
 import CookieManager from '@react-native-cookies/cookies';
 import Friend from './Friend';
 import You from './You';
-import {useState, createContext, useCallback} from 'react';
+import {useState, createContext, useCallback, useEffect} from 'react';
+import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 export const BackendContext = createContext();
 
@@ -12,48 +13,34 @@ export const BackendProvider = ({children}) => {
   const [yourActivity, setYourActivity] = useState({});
   const [friendsArray, setFriendsArray] = useState([]);
 
+  useEffect(() => {
+    console.log('sp_dc:', sp_dc);
+  }, [sp_dc]);
+
   /*
    * This function will call all the functions needed to get the user's friend activity
    * @param {} none
    */
-  const master_get_activity = async time => {
-    if (time > 25) {
-      return [];
-    } else {
-        await pause();
-        await master_get_activity(time + 1);
-    }
+  const master_get_activity = async () => {
+    console.log('Getting sp_dc');
+    await get_sp_dc();
+    console.log('Getting access token');
+    console.log('access token:' + get_access_token(await get_sp_dc()));
 
-    try {
-      console.log('Getting cookies');
-      const cookies = await get_cookies();
-      console.log('Getting sp_dc');
-      const sp_dc = await get_sp_dc();
-      console.log('Getting access token');
-      const accessToken = await get_access_token(sp_dc);
-      console.log('Getting activity');
-      const friendActivity = await get_activity(accessToken);
-      console.log('Parsing activity');
-      await get_your_activity(accessToken);
-      const friendsArray = await parse_friend_activity(friendActivity);
-
-      return friendsArray;
-    } catch (error) {
-      console.error('Error in master_get_activity:', error.message);
-      return []; // Return an empty array as a fallback value
-    }
-  };
-
-  const pause = async () => {
-    // Duration to pause in milliseconds
-    const duration = 500; // 3 seconds
-
-    await new Promise(resolve => {
-      setTimeout(resolve, duration);
-    });
-
-    // Function resumes execution after the pause
-    console.log('Function resumed after pause');
+    // console.log('Getting access token');
+    // get_access_token(sp_dc);
+    // console.log('Getting activity');
+    // get_activity(accessToken);
+    // console.log('Getting activity');
+    // get_activity(accessToken);
+    // console.log('Parsing activity');
+    // get_your_activity(accessToken);
+    // console.log('Parsing activity');
+    // get_your_activity(accessToken);
+    // console.log('Parsing activity');
+    // parse_friend_activity(friendActivity);
+    // console.log('Parsing activity');
+    // parse_friend_activity(friendActivity);
   };
 
   /*
@@ -63,12 +50,17 @@ export const BackendProvider = ({children}) => {
   const get_sp_dc = async () => {
     try {
       const cookies = await CookieManager.getAll(true);
+      console.log('start');
+      console.log('between start and mid:', cookies);
+      console.log('mid');
+      console.log('between mid and end:', cookies.sp_dc);
+      console.log('between mid and end 2:', cookies.sp_dc.value);
       if (cookies && cookies.sp_dc && cookies.sp_dc.value) {
         setSp_dc(cookies.sp_dc.value);
-        return sp_dc;
       } else {
-        throw new Error('sp_dc cookie not found');
+        console.log('sp_dc cookie not found');
       }
+      return cookies.sp_dc.value;
     } catch (error) {
       console.error('Error retrieving sp_dc cookie:', error);
       return null;
@@ -79,12 +71,16 @@ export const BackendProvider = ({children}) => {
    * This function gets the access_token cookie and returns it as a string
    * @param {string} sp_dc
    */
-  const get_access_token = async sp_dc => {
+  const get_access_token = async (sp_dc) => {
     await soft_clear_cookies();
-    const myHeaders = new Headers();
-    myHeaders.append('Cookie', `sp_dc=${sp_dc};`);
+    console.log("SP_DC HERE:",sp_dc);
+    var myHeaders = new Headers();
+    myHeaders.append(
+      'Cookie',
+      `sp_dc=${sp_dc};`,
+    );
 
-    const requestOptions = {
+    var requestOptions = {
       method: 'GET',
       headers: myHeaders,
       redirect: 'follow',
@@ -95,35 +91,21 @@ export const BackendProvider = ({children}) => {
         'https://open.spotify.com/get_access_token?reason=transport&productType=web_player',
         requestOptions,
       );
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch access token');
-      }
-
-      const result = await response.json();
-
-      if (result.error) {
-        throw new Error('Invalid token');
-      }
-
-      const accessToken = result.accessToken.toString();
-      setAccessToken(accessToken);
-      return accessToken;
+      console.log('response', response);
+      console.log('response.text()', response.text());
+      setAccessToken(JSON.parse(response.text()).accessToken);
+      return JSON.parse(response.text()).accessToken;
     } catch (error) {
-      console.error('Error in get_access_token:', error.message);
-      // Handle the error here
-      // You can perform any desired error handling or recovery logic
-      // For example, displaying an error message to the user or fallback actions
-      return null; // Return null or an appropriate fallback value
+      console.log('error', error);
     }
   };
-
+  
   /*
    * This function will take in the access_token cookie as a parameter, and return the user's activity as a string
    * @param {string} access_token
    */
-  const get_activity = async access_token => {
-    soft_clear_cookies();
+  const get_activity = access_token => {
+    // soft_clear_cookies();
     var myHeaders = new Headers();
     myHeaders.append('Authorization', `Bearer ${access_token}`);
 
@@ -148,7 +130,7 @@ export const BackendProvider = ({children}) => {
   /*
    * This function parses the friend activity data
    */
-  const parse_friend_activity = async friendActivity => {
+  const parse_friend_activity = friendActivity => {
     try {
       if (!friendActivity) {
         console.log('Friend activity is undefined.');
@@ -180,7 +162,7 @@ export const BackendProvider = ({children}) => {
   /*
    * This function clears all cookies and console.logs the result
    */
-  const hard_clear_cookies = async () => {
+  const hard_clear_cookies = () => {
     CookieManager.clearAll(true).then(success => {
       console.log('CookieManager.clearAll =>', success);
     });
@@ -190,7 +172,7 @@ export const BackendProvider = ({children}) => {
    * This function clears all cookies and console.logs the result
    */
   const soft_clear_cookies = async () => {
-    CookieManager.clearAll().then(success => {
+    await CookieManager.clearAll().then(success => {
       console.log('CookieManager.clearAll =>', success);
     });
   };
@@ -198,13 +180,13 @@ export const BackendProvider = ({children}) => {
   /*
    * This function gets all cookies and console.logs the result
    */
-  const get_cookies = async () => {
-    await CookieManager.getAll(true).then(cookies => {
-      //   console.log('CookieManager.getAll =>', cookies);
+  const get_cookies = () => {
+    CookieManager.getAll(true).then(cookies => {
+      console.log('CookieManager.getAll =>', cookies);
     });
   };
 
-  const get_your_activity = async access_token => {
+  const get_your_activity = access_token => {
     var myHeaders = new Headers();
     myHeaders.append('Authorization', `Bearer ${access_token}`);
 
