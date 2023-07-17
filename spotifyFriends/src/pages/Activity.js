@@ -1,5 +1,13 @@
 import {RefreshControl} from 'react-native-gesture-handler';
-import {ScrollView, View, Text, Image, SafeAreaView} from 'react-native';
+import {
+  ScrollView,
+  View,
+  Text,
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  ActivityIndicator
+} from 'react-native';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import MaIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import React, {useContext, useState} from 'react';
@@ -16,7 +24,7 @@ const ActivityScreen = ({navigation}) => {
     masterGetActivity();
     setTimeout(() => {
       setRefreshing(false);
-    }, 100);
+    }, 2000);
   }, []);
 
   return (
@@ -26,6 +34,13 @@ const ActivityScreen = ({navigation}) => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
+        {refreshing ? (
+          // Show the loading symbol when refreshing
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="small" color="#1EB955" />
+            <Text style={styles.loadingText}>Refreshing...</Text>
+          </View>
+        ) : null}
         <Text className="text-white text-3xl font-bold m-4 mb-0">
           Good Morning, {yourActivity.name}
         </Text>
@@ -92,7 +107,9 @@ const ActivityScreen = ({navigation}) => {
         </View>
         <View className="w-11/12 self-center">
           {friendsArray.map(item => (
-            <View className="h-[100px] flex flex-row gap-4 text-ellipsis px-2">
+            <View
+              className="h-[100px] flex flex-row gap-4 text-ellipsis px-2"
+              key={item.id}>
               <View className="h-[50px] w-[50px] my-auto self-center">
                 {item.timedifference === 'Now' && (
                   <View
@@ -103,6 +120,7 @@ const ActivityScreen = ({navigation}) => {
                       borderRadius: 50,
                       backgroundColor: '#1EB955',
                     }}
+                    key={item.id}
                   />
                 )}
                 <Image
@@ -158,5 +176,21 @@ const ActivityScreen = ({navigation}) => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+    loadingContainer: {
+      marginTop: 1,
+      marginBottom: 20,
+      height: 40,
+      justifyContent: 'start',
+      alignItems: 'center',
+      flexDirection: 'column',
+      backgroundColor: 'transparent',
+    },
+    loadingText: {
+      color: '#1EB955',
+      marginLeft: 10,
+    },
+  });
 
 export default ActivityScreen;
