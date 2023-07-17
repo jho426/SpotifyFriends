@@ -1,6 +1,8 @@
 import React, {useState, useContext} from 'react';
 import {View, Text, Button} from 'react-native';
 import {BackendContext} from '../utils/Backend';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const HomeScreen = ({navigation}) => {
   const {
@@ -21,12 +23,21 @@ const HomeScreen = ({navigation}) => {
     friendsArray,
     get_your_activity,
     yourActivity,
-    get_user_profile
+    get_user_profile,
   } = useContext(BackendContext);
 
   return (
     <View>
-      <Text>Welcome to the Home Screen!</Text>
+      <Icon.Button
+        name="facebook"
+        backgroundColor="#3b5998"
+        onPress={this.loginWithFacebook}>
+        Login with Facebook
+      </Icon.Button>
+      <Text>
+        Welcome to the Home Screen! <FontAwesome5 name={'comments'} />
+        <Icon name="comments" size={30} color="#900" solid />
+      </Text>
       <Button
         title="Go to Activity"
         onPress={() => navigation.navigate('Activity')}
@@ -79,7 +90,7 @@ const HomeScreen = ({navigation}) => {
       <Button
         title="Master"
         onPress={async () => {
-            await master_get_activity(0);
+          await master_get_activity(0);
         }}
       />
     </View>
