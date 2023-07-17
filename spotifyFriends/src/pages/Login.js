@@ -1,6 +1,6 @@
-import React from 'react';
 import {View, Text, Button} from 'react-native';
 import {WebView} from 'react-native-webview';
+import React from 'react';
 
 function LoginScreen({navigation}) {
   return (
@@ -21,3 +21,4 @@ function LoginScreen({navigation}) {
 }
 
 export default LoginScreen;
+
