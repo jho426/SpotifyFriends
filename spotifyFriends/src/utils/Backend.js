@@ -188,7 +188,7 @@ export const BackendProvider = ({children}) => {
     });
   };
 
-  const get_your_activity = access_token => {
+  const get_your_activity = async access_token => {
     var myHeaders = new Headers();
     await get_user_profile(access_token)
     console.log("your profile: "+userInfo)
