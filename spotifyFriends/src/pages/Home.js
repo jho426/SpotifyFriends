@@ -21,11 +21,14 @@ const HomeScreen = ({navigation}) => {
     friendsArray,
     get_your_activity,
     yourActivity,
+    get_user_profile,
   } = useContext(BackendContext);
 
   return (
     <View>
-      <Text>Welcome to the Home Screen!</Text>
+      <Text>
+        Welcome to the Home Screen!
+      </Text>
       <Button
         title="Go to Activity"
         onPress={() => navigation.navigate('Activity')}

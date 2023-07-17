@@ -1,4 +1,10 @@
 import React, {useContext, useState} from 'react';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import IonIcon from 'react-native-vector-icons/Ionicons'
+
 import {
   ScrollView,
   View,
@@ -30,40 +36,54 @@ const ActivityScreen = ({navigation}) => {
       }>
       <Text className="text-white text-3xl font-bold m-4">Good Morning,</Text>
       <View className="bg-[#232323] w-11/12 h-[100px] self-center rounded-xl m-4">
-        <Text className="text-white text-ellipsis">
-          {yourActivity.track.name}
-        </Text>
-        <Text className="text-white text-ellipsis">
-          {yourActivity.track.album.name}
-        </Text>
-        <Text className="text-white text-ellipsis">
-          {yourActivity.track.artists[0].name}
-        </Text>
-        <Text className="text-white text-ellipsis">
-          {yourActivity.timedifference}
-        </Text>
+        <View className="h-[100px] flex flex-row gap-4  my-auto px-2">
+          <Image
+            className="rounded-full"
+            source={{uri: yourActivity.photo}}
+            style={{width: '13%', height: '45%'}}
+          />
+          <View className="flex flex-col w-[230px]">
+            <Text className="text-white font-bold" numberOfLines={1} ellipsizeMode="tail">
+              {yourActivity.name}
+            </Text>
+            <Text className="text-white" numberOfLines={1} ellipsizeMode="tail">
+              {yourActivity.track.name}
+            </Text>
+            <Text className="text-white"  numberOfLines={1} ellipsizeMode="tail">
+              {yourActivity.track.album.name}
+            </Text>
+          </View>
+          <Text className="text-white text-[11px]">
+            {yourActivity.timedifference}
+          </Text>
+        </View>
       </View>
       <View className="w-11/12 self-center">
         {friendsArray.map(item => (
-          <View className="h-[100px] flex flex-row gap-4 text-ellipsis">
+          <View className="h-[100px] flex flex-row gap-4 text-ellipsis px-2">
             <Image
               className="rounded-full"
               source={{uri: item.user.imageUrl}}
-              style={{width: '13%', height: '50%'}}
+              style={{width: '13%', height: '45%'}}
               key={item.id}
             />
-            <View className="flex flex-col text-ellipsis">
-              <Text className="text-white text-ellipsis" key={item.id}>
+            <View className="flex flex-col w-[230px]">
+              <Text className="text-white font-bold" numberOfLines={1} ellipsizeMode="tail" key={item.id}>
                 {item.user.name}
               </Text>
-              <Text className="text-white text-ellipsis" key={item.id}>
+              <Text className="text-white"  numberOfLines={1} ellipsizeMode="tail" key={item.id}>
                 {item.track.name}
               </Text>
-              <Text className="text-white text-ellipsis" key={item.id}>
-                {item.track.context.name}
+              
+              <Text className="text-white" numberOfLines={1} ellipsizeMode="tail" key={item.id}>
+                {item.track.context.uri.includes("playlist") ?
+                  <IonIcon name="musical-notes-outline" size={12} color="white" solid /> :
+                  <MaIcon name="record-circle-outline" size={12} color="white" solid />
+                }
+              {item.track.context.name}
               </Text>
             </View>
-            <Text className="text-white text-ellipsis" key={item.id}>
+            <Text className="text-white text-[11px]" key={item.id}>
               {item.timedifference}
             </Text>
           </View>
