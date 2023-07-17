@@ -35,53 +35,52 @@ const HomeScreen = ({navigation}) => {
       />
       <Button
         title="Get Cookies"
-        onPress={async () => {
-          await get_cookies();
+        onPress={() => {
+          get_cookies();
         }}
       />
       <Button
         title="Hard Clear Cookies"
-        onPress={async () => {
-          await hard_clear_cookies();
+        onPress={() => {
+          hard_clear_cookies();
         }}
       />
       <Button
         title="Get sp_dc Cookie"
         onPress={async () => {
-          await get_sp_dc();
-          console.log(sp_dc);
+          console.log("buttons: " + await get_sp_dc());
         }}
       />
       <Button
         title="Get Access Token"
-        onPress={async () => {
-          await get_access_token(sp_dc);
+        onPress={() => {
+          get_access_token(sp_dc);
           console.log(accessToken);
         }}
       />
       <Button
         title="Get Activity"
-        onPress={async () => {
-          await get_activity(accessToken);
+        onPress={() => {
+          get_activity(accessToken);
           console.log(friendActivity);
         }}
       />
       <Button
         title="Parse Activity"
-        onPress={async () => {
-          await parse_friend_activity(friendActivity);
+        onPress={() => {
+          parse_friend_activity(friendActivity);
         }}
       />
       <Button
         title="Your Activity"
-        onPress={async () => {
-          await get_your_activity(accessToken);
+        onPress={() => {
+          get_your_activity(accessToken);
         }}
       />
       <Button
         title="Master"
         onPress={async () => {
-          await master_get_activity(0);
+          await master_get_activity();
         }}
       />
     </View>
