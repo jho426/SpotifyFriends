@@ -1,24 +1,24 @@
-import {View, Text, Button} from 'react-native';
 import {WebView} from 'react-native-webview';
 import React from 'react';
+import {SafeAreaView} from 'react-native';
 
 function LoginScreen({navigation}) {
+  const handleNavigationStateChange = newNavState => {
+    console.log(newNavState.title);
+    if (newNavState.title === 'Status - Spotify') {
+      navigation.navigate('Home');
+    }
+  };
+
   return (
-    <>
-      <View>
-        <Text>Welcome to the Login Screen!</Text>
-        <Button
-          title="Go to Home"
-          onPress={() => navigation.navigate('Home')}
-        />
-      </View>
+    <SafeAreaView style={{flex: 1, backgroundColor: '#121212'}}>
       <WebView
-        ref={ref => (this.webview = ref)}
-        source={{uri: 'https://open.spotify.com/'}}
+        style={{flex: 1, backgroundColor: '#121212'}}
+        source={{uri: 'https://accounts.spotify.com/login'}}
+        onNavigationStateChange={handleNavigationStateChange}
       />
-    </>
+    </SafeAreaView>
   );
 }
 
 export default LoginScreen;
-
