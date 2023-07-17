@@ -15,17 +15,22 @@ export const BackendProvider = ({children}) => {
    * @param {none}
    */
   const masterGetActivity = async () => {
-    // Step 1: Get the access token
-    const accessToken = await getAccessToken(await getSpDcCookie());
+    try {
+      // Step 1: Get the access token
+      const accessToken = await getAccessToken(await getSpDcCookie());
 
-    // Step 2: Get the friend activity and parse it
-    parseFriendActivity(await getActivity(accessToken));
+      // Step 2: Get the friend activity and parse it
+      parseFriendActivity(await getActivity(accessToken));
 
-    // Step 3: Get your own activity using the access token and user profile
-    await getYourActivity(accessToken, await getUserProfile(accessToken));
+      // Step 3: Get your own activity using the access token and user profile
+      await getYourActivity(accessToken, await getUserProfile(accessToken));
 
-    // Print a message indicating the process is complete
-    console.log('BOOM!');
+      // Print a message indicating the process is complete
+      console.log('BOOM!');
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      return false;
+    }
   };
 
   /**
@@ -65,6 +70,7 @@ export const BackendProvider = ({children}) => {
         return cookies.sp_dc.value;
       } else {
         console.log('sp_dc cookie not found');
+        return null;
       }
     } catch (error) {
       // Handle errors if encountered during the process
@@ -131,32 +137,28 @@ export const BackendProvider = ({children}) => {
     return [displayName, profilePhoto];
   };
 
-
   const getUserPlaylist = async (access_token, href, type) => {
     if (type === 'playlist') {
       const myHeaders = new Headers();
       myHeaders.append('Authorization', `Bearer ${access_token}`);
-  
+
       const requestOptions = {
         method: 'GET',
         headers: myHeaders,
         redirect: 'follow',
       };
 
-      const response = await fetch(
-        href,
-        requestOptions,
-      );
-  
+      const response = await fetch(href, requestOptions);
+
       const responseJson = await response.json();
       const isPublic = await responseJson.public;
       const playlistName = await responseJson.name;
 
-      return [isPublic, playlistName]
+      return [isPublic, playlistName];
     }
 
-    return [false, "album"]
-  }
+    return [false, 'album'];
+  };
 
   /**
    * This function gets the user's activity using the access token and user info.
@@ -185,7 +187,11 @@ export const BackendProvider = ({children}) => {
     const track = await firstTrack.track;
     const firstTrackContext = await firstTrack.context.type;
     const href = await firstTrack.context.href;
-    const playlistInfo = await getUserPlaylist(access_token, href, firstTrackContext)
+    const playlistInfo = await getUserPlaylist(
+      access_token,
+      href,
+      firstTrackContext,
+    );
 
     // Create a You object to represent the user's recent activity
     const youObj = new You(
@@ -195,7 +201,7 @@ export const BackendProvider = ({children}) => {
       userInfo[1],
       firstTrackContext,
       playlistInfo[0],
-      playlistInfo[1]
+      playlistInfo[1],
     );
     // Set the user's recent activity using the youObj (assumed to be defined)
     setYourActivity(youObj);

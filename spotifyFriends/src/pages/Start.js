@@ -5,10 +5,10 @@ import {
   StatusBar,
   SafeAreaView,
 } from 'react-native';
-import React from 'react';
 
 import LoginSvg from '../assets/loginButton.svg';
 import StartTitle from '../assets/startTitle.svg';
+import React from 'react';
 
 const StartScreen = ({navigation}) => {
   return (
