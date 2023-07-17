@@ -1,8 +1,6 @@
 import React, {useState, useContext} from 'react';
 import {View, Text, Button} from 'react-native';
 import {BackendContext} from '../utils/Backend';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const HomeScreen = ({navigation}) => {
   const {
@@ -28,15 +26,8 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <View>
-      <Icon.Button
-        name="facebook"
-        backgroundColor="#3b5998"
-        onPress={this.loginWithFacebook}>
-        Login with Facebook
-      </Icon.Button>
       <Text>
-        Welcome to the Home Screen! <FontAwesome5 name={'comments'} />
-        <Icon name="comments" size={30} color="#900" solid />
+        Welcome to the Home Screen!
       </Text>
       <Button
         title="Go to Activity"

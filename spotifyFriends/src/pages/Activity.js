@@ -1,4 +1,10 @@
 import React, {useContext, useState} from 'react';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import IonIcon from 'react-native-vector-icons/Ionicons'
+
 import {
   ScrollView,
   View,
@@ -70,7 +76,11 @@ const ActivityScreen = ({navigation}) => {
               </Text>
               
               <Text className="text-white" numberOfLines={1} ellipsizeMode="tail" key={item.id}>
-                {item.track.context.name}
+                {item.track.context.uri.includes("playlist") ?
+                  <IonIcon name="musical-notes-outline" size={12} color="white" solid /> :
+                  <MaIcon name="record-circle-outline" size={12} color="white" solid />
+                }
+              {item.track.context.name}
               </Text>
             </View>
             <Text className="text-white text-[11px]" key={item.id}>
