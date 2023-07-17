@@ -21,6 +21,7 @@ const HomeScreen = ({navigation}) => {
     friendsArray,
     get_your_activity,
     yourActivity,
+    get_user_profile
   } = useContext(BackendContext);
 
   return (

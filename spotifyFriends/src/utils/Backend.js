@@ -11,6 +11,7 @@ export const BackendProvider = ({children}) => {
   const [friendActivity, setFriendActivity] = useState('');
   const [yourActivity, setYourActivity] = useState({});
   const [friendsArray, setFriendsArray] = useState([]);
+  const [userInfo, setUserInfo] = useState([])
 
   /*
    * This function will call all the functions needed to get the user's friend activity
@@ -20,7 +21,6 @@ export const BackendProvider = ({children}) => {
     if (time > 25) {
       return [];
     } else {
-        await pause();
         await master_get_activity(time + 1);
     }
 
@@ -42,18 +42,6 @@ export const BackendProvider = ({children}) => {
       console.error('Error in master_get_activity:', error.message);
       return []; // Return an empty array as a fallback value
     }
-  };
-
-  const pause = async () => {
-    // Duration to pause in milliseconds
-    const duration = 500; // 3 seconds
-
-    await new Promise(resolve => {
-      setTimeout(resolve, duration);
-    });
-
-    // Function resumes execution after the pause
-    console.log('Function resumed after pause');
   };
 
   /*
@@ -206,6 +194,8 @@ export const BackendProvider = ({children}) => {
 
   const get_your_activity = async access_token => {
     var myHeaders = new Headers();
+    await get_user_profile(access_token)
+    console.log("your profile: "+userInfo)
     myHeaders.append('Authorization', `Bearer ${access_token}`);
 
     var requestOptions = {
@@ -221,7 +211,7 @@ export const BackendProvider = ({children}) => {
       .then(response => response.json())
       .then(data => {
         const firstTrack = data.items[0];
-        const youObj = new You(firstTrack.played_at, firstTrack.track);
+        const youObj = new You(firstTrack.played_at, firstTrack.track, userInfo[0], userInfo[1]);
         setYourActivity(youObj);
       })
       .catch(error => {
@@ -229,6 +219,34 @@ export const BackendProvider = ({children}) => {
       });
 
     return yourActivity;
+  };
+
+  const get_user_profile = async access_token => {
+    var myHeaders = new Headers();
+    myHeaders.append('Authorization', `Bearer ${access_token}`);
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow',
+    };
+
+    fetch(
+      'https://api.spotify.com/v1/me',
+      requestOptions,
+    )
+      .then(response => response.json())
+      .then(data => {
+        const displayName = data.display_name;
+        const profilePhoto = data.images[0].url;
+        console.log("profile:"+ profilePhoto)
+        setUserInfo([displayName, profilePhoto])
+      })
+      .catch(error => {
+        console.log('Error:', error);
+      });
+      
+      return userInfo
   };
 
   return (
@@ -251,6 +269,7 @@ export const BackendProvider = ({children}) => {
         friendsArray,
         get_your_activity,
         yourActivity,
+        get_user_profile
       }}>
       {children}
     </BackendContext.Provider>

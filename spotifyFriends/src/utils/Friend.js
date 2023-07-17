@@ -17,14 +17,14 @@ const calculateTimeDifference = (date) => {
     const hours = Math.floor(minutes/60);
     if (hours > 24) {
       const days = Math.floor(hours/24);
-      return `${days} days`
+      return `${days} d`
     }
     else {
-      return `${hours} hours`
+      return `${hours} hr`
     }
   } 
   else {
-    return `${minutes} minutes`
+    return `${minutes} min`
   }
 
 }
