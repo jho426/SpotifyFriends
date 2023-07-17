@@ -12,39 +12,47 @@ export const BackendProvider = ({children}) => {
   const [friendActivity, setFriendActivity] = useState('');
   const [yourActivity, setYourActivity] = useState({});
   const [friendsArray, setFriendsArray] = useState([]);
-  const [userInfo, setUserInfo] = useState([])
+  const [userInfo, setUserInfo] = useState([]);
 
-  useEffect(() => {
-    console.log('sp_dc:', sp_dc);
-    console.log('access token:', accessToken);
-    console.log('friend activity:', friendActivity);
-  }, [sp_dc, accessToken, friendActivity]);
-
-  useEffect(() => {
-    console.log('sp_dc:', sp_dc);
-    console.log('access token:', accessToken);
-    console.log('friend activity:', friendActivity);
-  }, [sp_dc, accessToken, friendActivity]);
+//   useEffect(() => {
+//     // console.log('sp_dc:', sp_dc);
+//     // console.log('access token:', accessToken);
+//     // console.log('friend activity:', friendActivity);
+//     // console.log('your activity:', yourActivity);
+//     // console.log('friends array:', friendsArray);
+//     // console.log('user info:', userInfo);
+//   }, [
+//     sp_dc,
+//     accessToken,
+//     friendActivity,
+//     yourActivity,
+//     friendsArray,
+//     userInfo,
+//   ]);
 
   /*
    * This function will call all the functions needed to get the user's friend activity
    * @param {} none
    */
   const master_get_activity = async () => {
-    console.log('Getting sp_dc');
-    await get_sp_dc();
-    console.log('Getting access token');
-    console.log('access token:' + get_access_token(await get_sp_dc()));
-    console.log('Getting activity');
-    console.log(
-      'activity:' + get_activity(await get_access_token(await get_sp_dc())),
-    );
-    console.log('Parsing activity');
+    // console.log('Getting sp_dc');
+    // await get_sp_dc();
+    // console.log('Getting access token');
+    // console.log('access token:' + get_access_token(await get_sp_dc()));
+    // console.log('Getting activity');
+    // console.log(
+    //   'activity:' + get_activity(await get_access_token(await get_sp_dc())),
+    // );
+    // console.log('Parsing activity');
     parse_friend_activity(
       await get_activity(await get_access_token(await get_sp_dc())),
     );
+    await get_your_activity(
+      await get_access_token(await get_sp_dc()),
+      await get_user_profile(await get_access_token(await get_sp_dc())),
+    );
 
-    get_your_activity(await get_access_token(await get_sp_dc()));
+    console.log('BOOM!');
   };
 
   /*
@@ -54,11 +62,11 @@ export const BackendProvider = ({children}) => {
   const get_sp_dc = async () => {
     try {
       const cookies = await CookieManager.getAll(true);
-      console.log('start');
-      console.log('between start and mid:', cookies);
-      console.log('mid');
-      console.log('between mid and end:', cookies.sp_dc);
-      console.log('between mid and end 2:', cookies.sp_dc.value);
+    //   console.log('start');
+    //   console.log('between start and mid:', cookies);
+    //   console.log('mid');
+    //   console.log('between mid and end:', cookies.sp_dc);
+    //   console.log('between mid and end 2:', cookies.sp_dc.value);
       if (cookies && cookies.sp_dc && cookies.sp_dc.value) {
         setSp_dc(cookies.sp_dc.value);
       } else {
@@ -77,7 +85,7 @@ export const BackendProvider = ({children}) => {
    */
   const get_access_token = async sp_dc => {
     await soft_clear_cookies();
-    console.log('SP_DC HERE:', sp_dc);
+    // console.log('SP_DC HERE:', sp_dc);
     const myHeaders = new Headers();
     myHeaders.append('Cookie', `sp_dc=${sp_dc};`);
 
@@ -93,11 +101,11 @@ export const BackendProvider = ({children}) => {
         requestOptions,
       );
       const result = await response.text();
-      console.log(result);
+    //   console.log(result);
       const jsonResult = await JSON.parse(result);
-      console.log(jsonResult);
+    //   console.log(jsonResult);
       const accessToken = await jsonResult.accessToken;
-      console.log(accessToken);
+    //   console.log(accessToken);
       setAccessToken(accessToken);
 
       return accessToken;
@@ -166,7 +174,7 @@ export const BackendProvider = ({children}) => {
    */
   const hard_clear_cookies = () => {
     CookieManager.clearAll(true).then(success => {
-      console.log('CookieManager.clearAll =>', success);
+    //   console.log('CookieManager.clearAll =>', success);
     });
   };
 
@@ -175,7 +183,7 @@ export const BackendProvider = ({children}) => {
    */
   const soft_clear_cookies = async () => {
     await CookieManager.clearAll().then(success => {
-      console.log('CookieManager.clearAll =>', success);
+    //   console.log('CookieManager.clearAll =>', success);
     });
   };
 
@@ -184,65 +192,71 @@ export const BackendProvider = ({children}) => {
    */
   const get_cookies = () => {
     CookieManager.getAll(true).then(cookies => {
-      console.log('CookieManager.getAll =>', cookies);
+    //   console.log('CookieManager.getAll =>', cookies);
     });
   };
 
-  const get_your_activity = async access_token => {
-    var myHeaders = new Headers();
-    await get_user_profile(access_token)
-    console.log("your profile: "+userInfo)
+  const get_your_activity = async (access_token, userInfo) => {
+    const myHeaders = new Headers();
+    // console.log('your profile: ' + userInfo);
     myHeaders.append('Authorization', `Bearer ${access_token}`);
 
-    var requestOptions = {
+    const requestOptions = {
       method: 'GET',
       headers: myHeaders,
       redirect: 'follow',
     };
 
-    fetch(
+    const response = await fetch(
       'https://api.spotify.com/v1/me/player/recently-played',
       requestOptions,
-    )
-      .then(response => response.json())
-      .then(data => {
-        const firstTrack = data.items[0];
-        const youObj = new You(firstTrack.played_at, firstTrack.track, userInfo[0], userInfo[1], firstTrack.context.track);
-        setYourActivity(youObj);
-      })
-      .catch(error => {
-        console.log('Error:', error);
-      });
+    );
+    const parsedData = await response.json();
+    const firstTrack = await parsedData.items[0];
+    const played_at = await firstTrack.played_at;
+    const track = await firstTrack.track;
+    const firstTrackContext = await firstTrack.context.type;
+    // const firstTrackContextTrack = await firstTrackContext.track;
+    
+    // console.log('first track:', firstTrack);
+    // console.log('played at:', played_at);
+    // console.log('track:', track);
+    // console.log('first track context:', firstTrackContext);
+    // console.log('first track context track:', firstTrackContextTrack);
 
-    return yourActivity;
+    const youObj = new You(
+      played_at,
+      track,
+      userInfo[0],
+      userInfo[1],
+      firstTrackContext,
+    );
+    setYourActivity(youObj);
+
+    return youObj;
   };
 
   const get_user_profile = async access_token => {
-    var myHeaders = new Headers();
+    const myHeaders = new Headers();
     myHeaders.append('Authorization', `Bearer ${access_token}`);
 
-    var requestOptions = {
+    const requestOptions = {
       method: 'GET',
       headers: myHeaders,
       redirect: 'follow',
     };
 
-    fetch(
+    const response = await fetch(
       'https://api.spotify.com/v1/me',
       requestOptions,
-    )
-      .then(response => response.json())
-      .then(data => {
-        const displayName = data.display_name;
-        const profilePhoto = data.images[0].url;
-        console.log("profile:"+ profilePhoto)
-        setUserInfo([displayName, profilePhoto])
-      })
-      .catch(error => {
-        console.log('Error:', error);
-      });
-      
-      return userInfo
+    );
+
+    const responseJson = await response.json();
+    const displayName = await responseJson.display_name;
+    const profilePhoto = await responseJson.images[0].url;
+    // console.log('profile:' + profilePhoto);
+    setUserInfo([displayName, profilePhoto]);
+    return [displayName, profilePhoto];
   };
 
   return (
@@ -265,7 +279,7 @@ export const BackendProvider = ({children}) => {
         friendsArray,
         get_your_activity,
         yourActivity,
-        get_user_profile
+        get_user_profile,
       }}>
       {children}
     </BackendContext.Provider>
