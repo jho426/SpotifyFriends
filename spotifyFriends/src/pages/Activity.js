@@ -2,8 +2,8 @@ import React, {useContext, useState} from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaIcon from 'react-native-vector-icons/MaterialCommunityIcons'
-import IonIcon from 'react-native-vector-icons/Ionicons'
+import MaIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 
 import {
   ScrollView,
@@ -17,7 +17,8 @@ import {BackendContext} from '../utils/Backend';
 import {RefreshControl} from 'react-native-gesture-handler';
 
 const ActivityScreen = ({navigation}) => {
-  const {friendsArray, yourActivity, master_get_activity} = useContext(BackendContext);
+  const {friendsArray, yourActivity, master_get_activity} =
+    useContext(BackendContext);
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = React.useCallback(() => {
@@ -43,13 +44,16 @@ const ActivityScreen = ({navigation}) => {
             style={{width: '13%', height: '45%'}}
           />
           <View className="flex flex-col w-[230px]">
-            <Text className="text-white font-bold" numberOfLines={1} ellipsizeMode="tail">
+            <Text
+              className="text-white font-bold"
+              numberOfLines={1}
+              ellipsizeMode="tail">
               {yourActivity.name}
             </Text>
             <Text className="text-white" numberOfLines={1} ellipsizeMode="tail">
               {yourActivity.track.name}
             </Text>
-            <Text className="text-white"  numberOfLines={1} ellipsizeMode="tail">
+            <Text className="text-white" numberOfLines={1} ellipsizeMode="tail">
               {yourActivity.track.album.name}
             </Text>
           </View>
@@ -60,7 +64,9 @@ const ActivityScreen = ({navigation}) => {
       </View>
       <View className="w-11/12 self-center">
         {friendsArray.map(item => (
-          <View className="h-[100px] flex flex-row gap-4 text-ellipsis px-2">
+          <View
+            className="h-[100px] flex flex-row gap-4 text-ellipsis px-2"
+            key={item.id}>
             <Image
               className="rounded-full"
               source={{uri: item.user.imageUrl}}
@@ -68,19 +74,42 @@ const ActivityScreen = ({navigation}) => {
               key={item.id}
             />
             <View className="flex flex-col w-[230px]">
-              <Text className="text-white font-bold" numberOfLines={1} ellipsizeMode="tail" key={item.id}>
+              <Text
+                className="text-white font-bold"
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                key={item.id}>
                 {item.user.name}
               </Text>
-              <Text className="text-white"  numberOfLines={1} ellipsizeMode="tail" key={item.id}>
+              <Text
+                className="text-white"
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                key={item.id}>
                 {item.track.name}
               </Text>
-              
-              <Text className="text-white" numberOfLines={1} ellipsizeMode="tail" key={item.id}>
-                {item.track.context.uri.includes("playlist") ?
-                  <IonIcon name="musical-notes-outline" size={12} color="white" solid /> :
-                  <MaIcon name="record-circle-outline" size={12} color="white" solid />
-                }
-              {item.track.context.name}
+
+              <Text
+                className="text-white"
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                key={item.id}>
+                {item.track.context.uri.includes('playlist') ? (
+                  <IonIcon
+                    name="musical-notes-outline"
+                    size={12}
+                    color="white"
+                    solid
+                  />
+                ) : (
+                  <MaIcon
+                    name="record-circle-outline"
+                    size={12}
+                    color="white"
+                    solid
+                  />
+                )}
+                {item.track.context.name}
               </Text>
             </View>
             <Text className="text-white text-[11px]" key={item.id}>

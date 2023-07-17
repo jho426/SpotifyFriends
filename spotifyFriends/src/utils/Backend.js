@@ -12,19 +12,23 @@ export const BackendProvider = ({children}) => {
   const [friendActivity, setFriendActivity] = useState('');
   const [yourActivity, setYourActivity] = useState({});
   const [friendsArray, setFriendsArray] = useState([]);
-  const [userInfo, setUserInfo] = useState([])
+  const [userInfo, setUserInfo] = useState([]);
 
   useEffect(() => {
-    console.log('sp_dc:', sp_dc);
-    console.log('access token:', accessToken);
-    console.log('friend activity:', friendActivity);
-  }, [sp_dc, accessToken, friendActivity]);
-
-  useEffect(() => {
-    console.log('sp_dc:', sp_dc);
-    console.log('access token:', accessToken);
-    console.log('friend activity:', friendActivity);
-  }, [sp_dc, accessToken, friendActivity]);
+    // console.log('sp_dc:', sp_dc);
+    // console.log('access token:', accessToken);
+    // console.log('friend activity:', friendActivity);
+    // console.log('your activity:', yourActivity);
+    // console.log('friends array:', friendsArray);
+    // console.log('user info:', userInfo);
+  }, [
+    sp_dc,
+    accessToken,
+    friendActivity,
+    yourActivity,
+    friendsArray,
+    userInfo,
+  ]);
 
   /*
    * This function will call all the functions needed to get the user's friend activity
@@ -43,8 +47,12 @@ export const BackendProvider = ({children}) => {
     parse_friend_activity(
       await get_activity(await get_access_token(await get_sp_dc())),
     );
+    await get_your_activity(
+      await get_access_token(await get_sp_dc()),
+      await get_user_profile(await get_access_token(await get_sp_dc())),
+    );
 
-    get_your_activity(await get_access_token(await get_sp_dc()));
+    console.log('BOOM!');
   };
 
   /*
@@ -188,10 +196,13 @@ export const BackendProvider = ({children}) => {
     });
   };
 
-  const get_your_activity = async access_token => {
+  /*
+   * This function get the user's profile
+   * @param {string} access_token
+   * @param {array} userInfo
+   */
+  const get_your_activity = async (access_token, userInfo) => {
     var myHeaders = new Headers();
-    await get_user_profile(access_token)
-    console.log("your profile: "+userInfo)
     myHeaders.append('Authorization', `Bearer ${access_token}`);
 
     var requestOptions = {
@@ -200,49 +211,48 @@ export const BackendProvider = ({children}) => {
       redirect: 'follow',
     };
 
-    fetch(
+    const response = await fetch(
       'https://api.spotify.com/v1/me/player/recently-played',
       requestOptions,
-    )
-      .then(response => response.json())
-      .then(data => {
-        const firstTrack = data.items[0];
-        const youObj = new You(firstTrack.played_at, firstTrack.track, userInfo[0], userInfo[1]);
-        setYourActivity(youObj);
-      })
-      .catch(error => {
-        console.log('Error:', error);
-      });
+    );
 
-    return yourActivity;
+    const responseJson = await response.json();
+    const firstTrack = await responseJson.items[0];
+    const youObj = new You(
+      firstTrack.played_at,
+      firstTrack.track,
+      userInfo[0],
+      userInfo[1],
+    );
+    setYourActivity(youObj);
+
+    return youObj;
   };
 
+  /*
+   * This function get the user's profile
+   */
   const get_user_profile = async access_token => {
-    var myHeaders = new Headers();
+    const myHeaders = new Headers();
     myHeaders.append('Authorization', `Bearer ${access_token}`);
 
-    var requestOptions = {
+    const requestOptions = {
       method: 'GET',
       headers: myHeaders,
       redirect: 'follow',
     };
 
-    fetch(
+    const response = await fetch(
       'https://api.spotify.com/v1/me',
       requestOptions,
-    )
-      .then(response => response.json())
-      .then(data => {
-        const displayName = data.display_name;
-        const profilePhoto = data.images[0].url;
-        console.log("profile:"+ profilePhoto)
-        setUserInfo([displayName, profilePhoto])
-      })
-      .catch(error => {
-        console.log('Error:', error);
-      });
-      
-      return userInfo
+    );
+
+    const responseJson = await response.json();
+    const displayName = await responseJson.display_name;
+    const profilePhoto = await responseJson.images[0].url;
+    console.log('profile:' + profilePhoto);
+    setUserInfo([displayName, profilePhoto]);
+    return [displayName, profilePhoto];
   };
 
   return (
@@ -265,7 +275,7 @@ export const BackendProvider = ({children}) => {
         friendsArray,
         get_your_activity,
         yourActivity,
-        get_user_profile
+        get_user_profile,
       }}>
       {children}
     </BackendContext.Provider>
