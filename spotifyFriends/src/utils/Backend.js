@@ -15,7 +15,9 @@ export const BackendProvider = ({children}) => {
 
   useEffect(() => {
     console.log('sp_dc:', sp_dc);
-  }, [sp_dc]);
+    console.log('access token:', accessToken);
+    console.log('friend activity:', friendActivity);
+  }, [sp_dc, accessToken, friendActivity]);
 
   /*
    * This function will call all the functions needed to get the user's friend activity
@@ -26,21 +28,16 @@ export const BackendProvider = ({children}) => {
     await get_sp_dc();
     console.log('Getting access token');
     console.log('access token:' + get_access_token(await get_sp_dc()));
+    console.log('Getting activity');
+    console.log(
+      'activity:' + get_activity(await get_access_token(await get_sp_dc())),
+    );
+    console.log('Parsing activity');
+    parse_friend_activity(
+      await get_activity(await get_access_token(await get_sp_dc())),
+    );
 
-    // console.log('Getting access token');
-    // get_access_token(sp_dc);
-    // console.log('Getting activity');
-    // get_activity(accessToken);
-    // console.log('Getting activity');
-    // get_activity(accessToken);
-    // console.log('Parsing activity');
-    // get_your_activity(accessToken);
-    // console.log('Parsing activity');
-    // get_your_activity(accessToken);
-    // console.log('Parsing activity');
-    // parse_friend_activity(friendActivity);
-    // console.log('Parsing activity');
-    // parse_friend_activity(friendActivity);
+    get_your_activity(await get_access_token(await get_sp_dc()));
   };
 
   /*
@@ -71,16 +68,13 @@ export const BackendProvider = ({children}) => {
    * This function gets the access_token cookie and returns it as a string
    * @param {string} sp_dc
    */
-  const get_access_token = async (sp_dc) => {
+  const get_access_token = async sp_dc => {
     await soft_clear_cookies();
-    console.log("SP_DC HERE:",sp_dc);
-    var myHeaders = new Headers();
-    myHeaders.append(
-      'Cookie',
-      `sp_dc=${sp_dc};`,
-    );
+    console.log('SP_DC HERE:', sp_dc);
+    const myHeaders = new Headers();
+    myHeaders.append('Cookie', `sp_dc=${sp_dc};`);
 
-    var requestOptions = {
+    const requestOptions = {
       method: 'GET',
       headers: myHeaders,
       redirect: 'follow',
@@ -91,40 +85,41 @@ export const BackendProvider = ({children}) => {
         'https://open.spotify.com/get_access_token?reason=transport&productType=web_player',
         requestOptions,
       );
-      console.log('response', response);
-      console.log('response.text()', response.text());
-      setAccessToken(JSON.parse(response.text()).accessToken);
-      return JSON.parse(response.text()).accessToken;
+      const result = await response.text();
+      console.log(result);
+      const jsonResult = await JSON.parse(result);
+      console.log(jsonResult);
+      const accessToken = await jsonResult.accessToken;
+      console.log(accessToken);
+      setAccessToken(accessToken);
+
+      return accessToken;
     } catch (error) {
       console.log('error', error);
     }
   };
-  
+
   /*
    * This function will take in the access_token cookie as a parameter, and return the user's activity as a string
    * @param {string} access_token
    */
-  const get_activity = access_token => {
-    // soft_clear_cookies();
-    var myHeaders = new Headers();
+  const get_activity = async access_token => {
+    const myHeaders = new Headers();
     myHeaders.append('Authorization', `Bearer ${access_token}`);
 
-    var requestOptions = {
+    const requestOptions = {
       method: 'GET',
       headers: myHeaders,
       redirect: 'follow',
     };
 
-    fetch(
+    const response = await fetch(
       'https://guc-spclient.spotify.com/presence-view/v1/buddylist',
       requestOptions,
-    )
-      .then(response => response.text())
-      .then(result => {
-        setFriendActivity(result);
-      })
-      .catch(error => console.log('error', error));
-    return friendActivity;
+    );
+    const result = await response.text();
+    setFriendActivity(result);
+    return result;
   };
 
   /*
