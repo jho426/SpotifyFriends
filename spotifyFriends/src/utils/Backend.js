@@ -207,7 +207,7 @@ export const BackendProvider = ({children}) => {
       .then(response => response.json())
       .then(data => {
         const firstTrack = data.items[0];
-        const youObj = new You(firstTrack.played_at, firstTrack.track, userInfo[0], userInfo[1]);
+        const youObj = new You(firstTrack.played_at, firstTrack.track, userInfo[0], userInfo[1], firstTrack.context.track);
         setYourActivity(youObj);
       })
       .catch(error => {

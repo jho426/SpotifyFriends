@@ -1,11 +1,12 @@
 class You {
-    constructor(played_at, track, name, photo) {
-      this.track = track;
-      this.date = played_at;
-      this.timedifference = calculateTimeDifference(played_at);
-      this.photo = photo;
-      this.name = name;
-    }
+  constructor(played_at, track, name, photo, type) {
+    this.track = track;
+    this.date = played_at;
+    this.timedifference = calculateTimeDifference(played_at);
+    this.photo = photo;
+    this.name = name;
+    this.type = type;
+  }
 }
 
 const calculateTimeDifference = (played_at) => {
