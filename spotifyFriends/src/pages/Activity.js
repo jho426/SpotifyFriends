@@ -64,7 +64,7 @@ const ActivityScreen = ({navigation}) => {
                 style={{width: '100%', height: '100%'}}
               />
             </View>
-            <View className="flex flex-col gap-1 w-[230px]">
+            <View className="flex flex-col gap-1 w-[220px]">
               <Text
                 className="text-white font-bold"
                 numberOfLines={1}
@@ -81,7 +81,7 @@ const ActivityScreen = ({navigation}) => {
                 className="text-white"
                 numberOfLines={1}
                 ellipsizeMode="tail">
-                {yourActivity.type === 'playlist' ? (
+                {yourActivity.type === 'playlist' && yourActivity.is_public === true ? (
                   <IonIcon
                     name="musical-notes-outline"
                     size={12}
@@ -97,7 +97,10 @@ const ActivityScreen = ({navigation}) => {
                   />
                 )}
                 <View className="spacer w-[5px]"></View>
-                {yourActivity.track.album.name}
+                {yourActivity.type === 'playlist' && yourActivity.is_public === true? 
+                  (<Text>{yourActivity.playlist_name}</Text>)  : 
+                  (<Text>{yourActivity.track.album.name}</Text>)
+                }
               </Text>
             </View>
             <Text className="text-white text-[11px]">
@@ -130,7 +133,7 @@ const ActivityScreen = ({navigation}) => {
                   key={item.id}
                 />
               </View>
-              <View className="flex flex-col gap-1 w-[230px]">
+              <View className="flex flex-col gap-1 w-[220px]">
                 <Text
                   className="text-white font-bold"
                   numberOfLines={1}
@@ -138,7 +141,11 @@ const ActivityScreen = ({navigation}) => {
                   key={item.id}>
                   {item.user.name}
                 </Text>
-                <Text className="text-white text-ellipsis" key={item.id}>
+                <Text className="text-white" 
+                  key={item.id}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  >
                   {item.track.name}
                 </Text>
 
@@ -166,7 +173,7 @@ const ActivityScreen = ({navigation}) => {
                   {item.track.context.name}
                 </Text>
               </View>
-              <Text className="text-white text-ellipsis" key={item.id}>
+              <Text className="text-white text-[11px]" key={item.id}>
                 {item.timedifference}
               </Text>
             </View>

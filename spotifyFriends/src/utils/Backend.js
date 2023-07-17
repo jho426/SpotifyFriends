@@ -131,6 +131,33 @@ export const BackendProvider = ({children}) => {
     return [displayName, profilePhoto];
   };
 
+
+  const getUserPlaylist = async (access_token, href, type) => {
+    if (type === 'playlist') {
+      const myHeaders = new Headers();
+      myHeaders.append('Authorization', `Bearer ${access_token}`);
+  
+      const requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow',
+      };
+
+      const response = await fetch(
+        href,
+        requestOptions,
+      );
+  
+      const responseJson = await response.json();
+      const isPublic = await responseJson.public;
+      const playlistName = await responseJson.name;
+
+      return [isPublic, playlistName]
+    }
+
+    return [false, "album"]
+  }
+
   /**
    * This function gets the user's activity using the access token and user info.
    * @param {string} access_token - The Spotify access token.
@@ -157,6 +184,8 @@ export const BackendProvider = ({children}) => {
     const played_at = await firstTrack.played_at;
     const track = await firstTrack.track;
     const firstTrackContext = await firstTrack.context.type;
+    const href = await firstTrack.context.href;
+    const playlistInfo = await getUserPlaylist(access_token, href, firstTrackContext)
 
     // Create a You object to represent the user's recent activity
     const youObj = new You(
@@ -165,8 +194,9 @@ export const BackendProvider = ({children}) => {
       userInfo[0],
       userInfo[1],
       firstTrackContext,
+      playlistInfo[0],
+      playlistInfo[1]
     );
-
     // Set the user's recent activity using the youObj (assumed to be defined)
     setYourActivity(youObj);
 

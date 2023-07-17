@@ -1,11 +1,13 @@
 class You {
-  constructor(played_at, track, name, photo, type) {
+  constructor(played_at, track, name, photo, type, is_public, playlist_name) {
     this.track = track;
     this.date = played_at;
     this.timedifference = calculateTimeDifference(played_at);
     this.photo = photo;
     this.name = name;
     this.type = type;
+    this.is_public = is_public;
+    this.playlist_name = playlist_name;
   }
 }
 
