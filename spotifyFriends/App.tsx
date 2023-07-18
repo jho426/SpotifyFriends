@@ -8,7 +8,6 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {MyStack} from './StackNavigator';
-
 import BackendProvider from './src/utils/Backend';
 
 function App(): React.JSX.Element {
