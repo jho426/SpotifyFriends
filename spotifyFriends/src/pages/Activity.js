@@ -75,12 +75,21 @@ const ActivityScreen = ({navigation}) => {
                   ellipsizeMode="tail">
                   {yourActivity.name}
                 </Text>
-                <Text
-                  className="text-white"
-                  numberOfLines={1}
-                  ellipsizeMode="tail">
-                  {yourActivity.track.name}
-                </Text>
+                <View className="flex flex-row w-[100%">
+                  <Text
+                    className="text-white max-w-[50%]"
+                    numberOfLines={1}
+                    ellipsizeMode="tail">
+                    {yourActivity.track.name}
+                  </Text>
+                  <View className="rounded-full bg-white my-auto mx-[4px] w-[4px] h-[4px]" />
+                  <Text
+                    className="text-white max-w-[50%]"
+                    numberOfLines={1}
+                    ellipsizeMode="tail">
+                    {yourActivity.track.album.artists[0].name}
+                  </Text>
+                </View>
                 <Text
                   className="text-white"
                   numberOfLines={1}
@@ -201,27 +210,27 @@ const ActivityScreen = ({navigation}) => {
         <View className = "w-full flex flex-row absolute fixed top-[98%] bg-[#121212] items-center justify-center border border-[#181717] border-top-2 h-[100px] opacity-100">
             <View className="my-auto items-center mx-auto">
               <TouchableOpacity>
-                  <AntIcon 
+                  <IonIcon
                   name="home" 
                   size = {27}
                   color="#E0DCDC"
                   onPress={async () => {
                     navigation.navigate('Activity');
                   }}
-                  ></AntIcon>
+                  ></IonIcon>
               </TouchableOpacity>
-              <Text className="text-[#E0DCDC] text-[11px]">Home</Text>
+              <Text className="text-white text-[11px]">Home</Text>
             </View>
             <View className="my-auto items-center mx-auto">
               <TouchableOpacity>
-                  <AntIcon 
-                  name="setting" 
-                  size = {27}
-                  color="#E0DCDC"
-                  onPress={async () => {
-                    navigation.navigate('Settings');
-                  }}
-                  ></AntIcon>
+                  <IonIcon 
+                    name="cog-outline" 
+                    size = {27}
+                    color="#E0DCDC"
+                    onPress={async () => {
+                      navigation.navigate('Settings');
+                    }}
+                  ></IonIcon>
               </TouchableOpacity>
               <Text className="text-[#E0DCDC] text-[11px]">Settings</Text>
             </View>

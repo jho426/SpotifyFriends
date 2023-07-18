@@ -5,15 +5,6 @@ import LoginScreen from './src/pages/Login';
 import ActivityScreen from './src/pages/Activity';
 import SettingsScreen from './src/pages/Settings';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AntIcon from 'react-native-vector-icons/AntDesign'
-
-import {
-  View,
-  ActivityIndicator,
-  StyleSheet,
-  TouchableOpacity,
-  Text
-} from 'react-native';
 
 const Stack = createStackNavigator();
 
@@ -49,6 +40,8 @@ export function MyStack() {
         component={ActivityScreen}
         options={{
           headerShown: false,
+          animation: 'none',
+          animationEnabled: false,
           headerLeft: () => null,
         }}
       />
@@ -57,6 +50,8 @@ export function MyStack() {
           component={SettingsScreen}
           options={{
             headerShown: false,
+            animation: 'none' ,
+            animationEnabled: false,
             headerLeft: () => null,
         }}
       />
