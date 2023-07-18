@@ -185,15 +185,27 @@ export const BackendProvider = ({children}) => {
     const firstTrack = await parsedData.items[0];
     const played_at = await firstTrack.played_at;
     const track = await firstTrack.track;
-    const firstTrackContext = await firstTrack.context.type;
-    const href = await firstTrack.context.href;
-    const playlistInfo = await getUserPlaylist(
+
+    let firstTrackContext;
+    let href;
+
+    if (firstTrack.context !== null) {
+      firstTrackContext = await firstTrack.context.type;
+      href = await firstTrack.context.href;
+    }
+    else {
+      firstTrackContext = {
+        "type" : "album"
+      };
+      href = firstTrack.track.href;
+    }
+
+    const playlistInfo = await getUserPlaylist (
       access_token,
       href,
-      firstTrackContext,
+      firstTrackContext
     );
 
-    // Create a You object to represent the user's recent activity
     const youObj = new You(
       played_at,
       track,
@@ -203,9 +215,9 @@ export const BackendProvider = ({children}) => {
       playlistInfo[0],
       playlistInfo[1],
     );
+
     // Set the user's recent activity using the youObj (assumed to be defined)
     setYourActivity(youObj);
-
     return youObj;
   };
 
