@@ -4,7 +4,7 @@ import HomeScreen from './src/pages/Home';
 import LoginScreen from './src/pages/Login';
 import ActivityScreen from './src/pages/Activity';
 import SettingsScreen from './src/pages/Settings';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const Stack = createStackNavigator();
 
@@ -23,8 +23,11 @@ export function MyStack() {
         name="Login"
         component={LoginScreen}
         options={{
-          headerShown: false,
-          headerLeft: () => null,
+          headerTintColor: 'white',
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: 'black',
+          },
         }}
       />
       <Stack.Screen
@@ -45,14 +48,14 @@ export function MyStack() {
           headerLeft: () => null,
         }}
       />
-         <Stack.Screen
-          name="Settings"
-          component={SettingsScreen}
-          options={{
-            headerShown: false,
-            animation: 'none' ,
-            animationEnabled: false,
-            headerLeft: () => null,
+      <Stack.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          headerShown: false,
+          animation: 'none',
+          animationEnabled: false,
+          headerLeft: () => null,
         }}
       />
     </Stack.Navigator>

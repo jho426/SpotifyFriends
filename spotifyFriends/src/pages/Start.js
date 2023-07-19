@@ -6,33 +6,39 @@ import {
   SafeAreaView,
 } from 'react-native';
 
-import LoginSvg from '../assets/loginButton.svg';
 import StartTitle from '../assets/startTitle.svg';
 import React from 'react';
+import MaIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {ImageBackground} from 'react-native';
 
 const StartScreen = ({navigation}) => {
   return (
-    <>
-      <SafeAreaView className="bg-[#1EB955]" style={{flex: 0}} />
-      <SafeAreaView className="bg-[#121212]">
-        <View className="bg-[#121212] h-full">
+    <ImageBackground source={require('../assets/start.png')} style={{flex: 1}}>
+      <SafeAreaView className="">
+        <View className="h-full">
           <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
-          <View className="bg-[#1EB955] w-[600px] h-[600px] absolute top-[-100px] border rounded-full self-center items-center"></View>
           <View className="top-[100px]">
             <StartTitle />
           </View>
-          <View className="bg-white w-[250px] h-[50px] rounded-3xl top-[280px] self-center justify-center items-center">
-            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-              <LoginSvg />
+          <View className="bg-white w-[250px] h-[50px] rounded-3xl top-[45%] self-center justify-center items-center">
+            <TouchableOpacity
+              style={{flexDirection: 'row', alignItems: 'center'}}
+              onPress={() => navigation.navigate('Login')}>
+              <MaIcon name="spotify" size={24} color="black" solid />
+              <Text style={{marginLeft: 5}}>Login with Spotify®</Text>
             </TouchableOpacity>
           </View>
-          <View className="align-center self-center top-[600px]">
-            <Text className="text-center text-[#E0DCDC]">Jacqueline Ho</Text>
-            <Text className="text-center text-[#E0DCDC]">Dorian Chen</Text>
+          <View className="self-center absolute bottom-10">
+            <Text className="text-center text-xs text-[#E0DCDC]">
+              Jacqueline Ho
+            </Text>
+            <Text className="text-center text-xs text-[#E0DCDC]">
+              Dorian Chen
+            </Text>
           </View>
         </View>
       </SafeAreaView>
-    </>
+    </ImageBackground>
   );
 };
 

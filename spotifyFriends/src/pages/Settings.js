@@ -5,7 +5,13 @@ import React, {useContext} from 'react';
 import {BackendContext} from '../utils/Backend';
 
 const SettingsScreen = ({navigation}) => {
-  const {hardClearCookies} = useContext(BackendContext);
+  const {
+    hardClearCookies,
+    yourActivity,
+    friendsArray,
+    setFriendsArray,
+    setYourActivity,
+  } = useContext(BackendContext);
   return (
     <>
       <SafeAreaView className="bg-[#121212]">
@@ -13,6 +19,8 @@ const SettingsScreen = ({navigation}) => {
           <TouchableOpacity
             onPress={async () => {
               await hardClearCookies();
+              await setYourActivity({});
+              await setFriendsArray([]);
               navigation.navigate('Start');
             }}
             style={{
@@ -28,7 +36,7 @@ const SettingsScreen = ({navigation}) => {
             <Text style={{color: '#FFF', fontSize: 18}}>Logout</Text>
           </TouchableOpacity>
         </View>
-        <View className="w-full flex flex-row absolute fixed top-[98%] bg-[#121212] items-center justify-center border border-[#181717] border-top-2 h-[100px] opacity-100">
+        <View className="w-full flex flex-row absolute bottom-0 bg-[#121212] items-center justify-center border border-[#181717] border-top-2 h-[100px] opacity-100">
           <View className="my-auto items-center mx-auto">
             <TouchableOpacity>
               <IonIcon

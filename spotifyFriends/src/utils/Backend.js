@@ -51,6 +51,7 @@ export const BackendProvider = ({children}) => {
 
       // Print a message indicating the process is complete
       console.log('BOOM!');
+      return true;
     } catch (error) {
       console.error('Error fetching data:', error);
       return false;
@@ -167,7 +168,9 @@ export const BackendProvider = ({children}) => {
       const displayName = responseJson.display_name;
       const profilePhoto = responseJson.images?.[0]?.url;
 
-      if (!displayName || !profilePhoto) {
+      console.log('profilePhoto:', profilePhoto);
+
+      if (!displayName) {
         console.error('Error retrieving user profile data');
         return null;
       }
@@ -390,6 +393,8 @@ const getYourActivity = async (access_token, userInfo) => {
       getYourActivity,
       yourActivity,
       getUserProfile,
+      setFriendsArray,
+      setYourActivity
     }),
     [yourActivity, friendsArray],
   );
