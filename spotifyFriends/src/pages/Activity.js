@@ -22,6 +22,19 @@ const ActivityScreen = ({navigation}) => {
     useContext(BackendContext);
   const [refreshing, setRefreshing] = useState(false);
 
+  const currentTime = new Date();
+  const hours = currentTime.getHours();
+
+  let greeting;
+
+  if (hours >= 5 && hours < 12) {
+    greeting = 'Good Morning';
+  } else if (hours >= 12 && hours < 18) {
+    greeting = 'Good Afternoon';
+  } else {
+    greeting = 'Good Evening';
+  }
+
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     masterGetActivity();
@@ -47,20 +60,22 @@ const ActivityScreen = ({navigation}) => {
           <View className="w-[85%]">
             <Text className="text-white text-3xl font-bold mt-4 mx-4 mb-0">
               {' '}
-              Good Morning,
+              {greeting},
             </Text>
-            <Text
-              className="text-white text-3xl font-bold mb-0 mx-4"
-              ellipsizeMode="tail"
-              numberOfLines={1}>
-              {' '}
-              {yourActivity.name}
-            </Text>
+            {yourActivity?.name && (
+              <Text
+                className="text-white text-3xl font-bold mb-0 mx-4"
+                ellipsizeMode="tail"
+                numberOfLines={1}>
+                {' '}
+                {yourActivity.name}
+              </Text>
+            )}
           </View>
           <View className="bg-[#181717] w-11/12 h-[100px] self-center rounded-xl m-4">
             <View className="h-[100px] bg-flex flex-row gap-4 my-auto px-2">
               <View className="h-[50px] w-[50px] my-auto">
-                {yourActivity.timedifference === 'Now' && (
+                {yourActivity?.timedifference === 'Now' && (
                   <View
                     className="absolute left-[40px] border border-[#181717] z-10"
                     style={{
@@ -71,40 +86,48 @@ const ActivityScreen = ({navigation}) => {
                     }}
                   />
                 )}
-                <Image
-                  className="rounded-full"
-                  source={{uri: yourActivity.photo}}
-                  style={{width: '100%', height: '100%'}}
-                />
+                {yourActivity?.photo && (
+                  <Image
+                    className="rounded-full"
+                    source={{uri: yourActivity.photo}}
+                    style={{width: '100%', height: '100%'}}
+                  />
+                )}
               </View>
               <View className="flex flex-col gap-1 w-[220px]">
-                <Text
-                  className="text-white font-bold"
-                  numberOfLines={1}
-                  ellipsizeMode="tail">
-                  {yourActivity.name}
-                </Text>
+                {yourActivity?.name && (
+                  <Text
+                    className="text-white font-bold"
+                    numberOfLines={1}
+                    ellipsizeMode="tail">
+                    {yourActivity.name}
+                  </Text>
+                )}
                 <View className="flex flex-row w-[100%">
-                  <Text
-                    className="text-white max-w-[50%]"
-                    numberOfLines={1}
-                    ellipsizeMode="tail">
-                    {yourActivity.track.name}
-                  </Text>
+                  {yourActivity?.track?.name && (
+                    <Text
+                      className="text-white max-w-[50%]"
+                      numberOfLines={1}
+                      ellipsizeMode="tail">
+                      {yourActivity.track.name}
+                    </Text>
+                  )}
                   <View className="rounded-full bg-white my-auto mx-[4px] w-[4px] h-[4px]" />
-                  <Text
-                    className="text-white max-w-[50%]"
-                    numberOfLines={1}
-                    ellipsizeMode="tail">
-                    {yourActivity.track.album.artists[0].name}
-                  </Text>
+                  {yourActivity?.track?.album?.artists[0]?.name && (
+                    <Text
+                      className="text-white max-w-[50%]"
+                      numberOfLines={1}
+                      ellipsizeMode="tail">
+                      {yourActivity.track.album.artists[0].name}
+                    </Text>
+                  )}
                 </View>
                 <Text
                   className="text-white"
                   numberOfLines={1}
                   ellipsizeMode="tail">
-                  {yourActivity.type === 'playlist' &&
-                  yourActivity.is_public === true ? (
+                  {yourActivity?.type === 'playlist' &&
+                  yourActivity?.is_public === true ? (
                     <IonIcon
                       name="musical-notes-outline"
                       size={12}
@@ -120,99 +143,114 @@ const ActivityScreen = ({navigation}) => {
                     />
                   )}
                   <View className="spacer w-[5px]"></View>
-                  {yourActivity.type === 'playlist' &&
-                  yourActivity.is_public === true ? (
+                  {yourActivity?.type === 'playlist' &&
+                  yourActivity?.is_public === true &&
+                  yourActivity?.playlist_name ? (
                     <Text>{yourActivity.playlist_name}</Text>
                   ) : (
-                    <Text>{yourActivity.track.album.name}</Text>
+                    yourActivity?.track?.album?.name && (
+                      <Text>{yourActivity.track.album.name}</Text>
+                    )
                   )}
                 </Text>
               </View>
-              <Text className="text-white text-[11px]">
-                {yourActivity.timedifference}
-              </Text>
+              {yourActivity?.timedifference && (
+                <Text className="text-white text-[11px]">
+                  {yourActivity.timedifference}
+                </Text>
+              )}
             </View>
           </View>
           <View className="w-11/12 self-center">
-            {friendsArray.map(item => (
-              <View
-                className="h-[100px] flex flex-row gap-4 text-ellipsis px-2"
-                key={item.id}>
-                <View className="h-[50px] w-[50px] my-auto self-center">
-                  {item.timedifference === 'Now' && (
-                    <View
-                      className="absolute left-[40px] border z-10"
-                      style={{
-                        width: 10,
-                        height: 10,
-                        borderRadius: 50,
-                        backgroundColor: '#1EB955',
-                      }}
-                      key={item.id}
-                    />
-                  )}
-                  <Image
-                    className="rounded-full"
-                    source={{uri: item.user.imageUrl}}
-                    style={{width: '100%', height: '100%'}}
-                    key={item.id}
-                  />
-                </View>
-                <View className="flex flex-col gap-1 w-[220px]">
-                  <Text
-                    className="text-white font-bold"
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    key={item.id}>
-                    {item.user.name}
-                  </Text>
-                  <View className="flex flex-row w-[100%]">
-                    <Text
-                      className="text-white max-w-[50%]"
-                      key={item.id}
-                      numberOfLines={1}
-                      ellipsizeMode="tail">
-                      {item.track.name}
-                    </Text>
-                    <View className="rounded-full bg-white my-auto mx-[4px] w-[4px] h-[4px]" />
-                    <Text
-                      className="text-white max-w-[50%]"
-                      key={item.id}
-                      numberOfLines={1}
-                      ellipsizeMode="tail">
-                      {item.track.artist.name}
-                    </Text>
-                  </View>
-
-                  <Text
-                    className="text-white"
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                    key={item.id}>
-                    {item.track.context.uri.includes('playlist') ? (
-                      <IonIcon
-                        name="musical-notes-outline"
-                        size={12}
-                        color="white"
-                        solid
-                      />
-                    ) : (
-                      <MaIcon
-                        name="record-circle-outline"
-                        size={12}
-                        color="white"
-                        solid
+            {friendsArray &&
+              friendsArray.map(item => (
+                <View
+                  className="h-[100px] flex flex-row gap-4 text-ellipsis px-2"
+                  key={item?.id}>
+                  <View className="h-[50px] w-[50px] my-auto self-center">
+                    {item?.timedifference === 'Now' && (
+                      <View
+                        className="absolute left-[40px] border z-10"
+                        style={{
+                          width: 10,
+                          height: 10,
+                          borderRadius: 50,
+                          backgroundColor: '#1EB955',
+                        }}
+                        wwww
+                        key={item?.id}
                       />
                     )}
-                    <View className="spacer w-[5px]"></View>
-                    {item.track.context.name}
+                    {item?.user?.imageUrl && (
+                      <Image
+                        className="rounded-full"
+                        source={{uri: item.user.imageUrl}}
+                        style={{width: '100%', height: '100%'}}
+                        key={item?.id}
+                      />
+                    )}
+                  </View>
+                  <View className="flex flex-col gap-1 w-[220px]">
+                    {item?.user?.name && (
+                      <Text
+                        className="text-white font-bold"
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
+                        key={item.id}>
+                        {item.user.name}
+                      </Text>
+                    )}
+                    <View className="flex flex-row w-[100%]">
+                      {item?.track?.name && (
+                        <Text
+                          className="text-white max-w-[50%]"
+                          key={item.id}
+                          numberOfLines={1}
+                          ellipsizeMode="tail">
+                          {item.track.name}
+                        </Text>
+                      )}
+                      <View className="rounded-full bg-white my-auto mx-[4px] w-[4px] h-[4px]" />
+                      {item?.track?.artist?.name && (
+                        <Text
+                          className="text-white max-w-[50%]"
+                          key={item.id}
+                          numberOfLines={1}
+                          ellipsizeMode="tail">
+                          {item.track.artist.name}
+                        </Text>
+                      )}
+                    </View>
+
+                    <Text
+                      className="text-white"
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                      key={item.id}>
+                      {item?.track?.context?.uri?.includes('playlist') ? (
+                        <IonIcon
+                          name="musical-notes-outline"
+                          size={12}
+                          color="white"
+                          solid
+                        />
+                      ) : (
+                        <MaIcon
+                          name="record-circle-outline"
+                          size={12}
+                          color="white"
+                          solid
+                        />
+                      )}
+                      <View className="spacer w-[5px]"></View>
+                      {item?.track?.context?.name}
+                    </Text>
+                  </View>
+                  <Text className="text-white text-[11px]" key={item?.id}>
+                    {item?.timedifference}
                   </Text>
                 </View>
-                <Text className="text-white text-[11px]" key={item.id}>
-                  {item.timedifference}
-                </Text>
-              </View>
-            ))}
+              ))}
           </View>
         </ScrollView>
       </View>
