@@ -170,7 +170,7 @@ export const BackendProvider = ({children}) => {
 
       console.log('profilePhoto:', profilePhoto);
 
-      if (!displayName) {
+      if (displayName == null) {
         console.error('Error retrieving user profile data');
         return null;
       }
@@ -213,7 +213,7 @@ export const BackendProvider = ({children}) => {
         const isPublic = responseJson.public;
         const playlistName = responseJson.name;
 
-        if (!isPublic || !playlistName) {
+        if (isPublic == null || playlistName == null) {
           console.error('Error retrieving playlist data');
           return null;
         }
@@ -229,42 +229,45 @@ export const BackendProvider = ({children}) => {
   };
 
   /**
- * This function gets the user's activity using the access token and user info.
- * @param {string} access_token - The Spotify access token.
- * @param {Array} userInfo - An array containing user information (assumed to contain name and email).
- * @returns {You|null} - An object representing the user's recent activity, or null if there are any issues.
- */
-const getYourActivity = async (access_token, userInfo) => {
+   * This function gets the user's activity using the access token and user info.
+   * @param {string} access_token - The Spotify access token.
+   * @param {Array} userInfo - An array containing user information (assumed to contain name and email).
+   * @returns {You|null} - An object representing the user's recent activity, or null if there are any issues.
+   */
+  const getYourActivity = async (access_token, userInfo) => {
     const myHeaders = new Headers();
     myHeaders.append('Authorization', `Bearer ${access_token}`);
-  
+
     const requestOptions = {
       method: 'GET',
       headers: myHeaders,
       redirect: 'follow',
     };
-  
+
     try {
-      const response = await fetch('https://api.spotify.com/v1/me/player/recently-played', requestOptions);
-  
+      const response = await fetch(
+        'https://api.spotify.com/v1/me/player/recently-played',
+        requestOptions,
+      );
+
       const parsedData = await response?.json();
       if (!parsedData || !parsedData.items || parsedData.items.length === 0) {
         console.error('Error retrieving recently played data');
         return null;
       }
-  
+
       const firstTrack = parsedData.items[0];
       if (!firstTrack) {
         console.error('Error retrieving first track data');
         return null;
       }
-  
+
       const played_at = firstTrack.played_at;
       const track = firstTrack.track;
-  
+
       let firstTrackContext;
       let href;
-  
+
       if (firstTrack.context !== null) {
         firstTrackContext = firstTrack.context.type;
         href = firstTrack.context.href;
@@ -272,13 +275,17 @@ const getYourActivity = async (access_token, userInfo) => {
         firstTrackContext = 'album';
         href = firstTrack.track.href;
       }
-  
-      const playlistInfo = await getUserPlaylist(access_token, href, firstTrackContext);
-      if (!playlistInfo) {
+
+      const playlistInfo = await getUserPlaylist(
+        access_token,
+        href,
+        firstTrackContext,
+      );
+      if (playlistInfo === null) {
         console.error('Error retrieving playlist info');
         return null;
       }
-  
+
       const youObj = new You(
         played_at,
         track,
@@ -288,7 +295,7 @@ const getYourActivity = async (access_token, userInfo) => {
         playlistInfo[0],
         playlistInfo[1],
       );
-  
+
       // Set the user's recent activity using the youObj (assumed to be defined)
       setYourActivity(youObj);
       return youObj;
@@ -296,7 +303,7 @@ const getYourActivity = async (access_token, userInfo) => {
       console.error('Error retrieving user activity:', error);
       return null;
     }
-  };  
+  };
 
   /**
    * This function will take in the access_token cookie as a parameter and return the user's activity as a string.
@@ -394,7 +401,7 @@ const getYourActivity = async (access_token, userInfo) => {
       yourActivity,
       getUserProfile,
       setFriendsArray,
-      setYourActivity
+      setYourActivity,
     }),
     [yourActivity, friendsArray],
   );
