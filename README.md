@@ -1,6 +1,6 @@
 # SpotifyFriends: Listening Activity for Spotify
 
-Integrated using Spotify's API, Spotify Friends is a mobile app that allows you to effortlessly stay up to date with your own and your friend's listening activity on Spotify. 
+Spotify Friends is a mobile app that allows you to effortlessly stay up to date with your own and your friend's listening activity on Spotify. The app fetches data from Spotify's API in real-time, allowing you to see what you or your friends are listening to at any given moment.
 
 Created by Dorian Chen & Jacqueline Ho
 
