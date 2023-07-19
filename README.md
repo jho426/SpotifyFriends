@@ -4,7 +4,7 @@ Spotify Friends is a mobile app that allows you to effortlessly stay up to date 
 
 Created by Dorian Chen & Jacqueline Ho
 
-![Group 47](https://github.com/jho426/SpotifyFriends/assets/75771131/9cff4a4c-fbea-4915-9408-300e0354c569)
+![Group 47](https://github.com/jho426/SpotifyFriends/assets/75771131/8d48e513-f897-47e9-baa1-b9a98df7d5ac)
 
 ## Tech Stack
 
