@@ -13,3 +13,7 @@ Created by Dorian Chen & Jacqueline Ho
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![Spotify](https://img.shields.io/badge/Spotify-1ED760?style=for-the-badge&logo=spotify&logoColor=white)
 ![Xcode](https://img.shields.io/badge/Xcode-007ACC?style=for-the-badge&logo=Xcode&logoColor=white)
+
+## Architecture
+
+![Mind Maps](https://github.com/jho426/SpotifyFriends/assets/75771131/8d464983-7b9c-41c2-b718-859b68f7588f)
