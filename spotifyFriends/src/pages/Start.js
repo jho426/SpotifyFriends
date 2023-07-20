@@ -4,17 +4,27 @@ import {
   TouchableOpacity,
   StatusBar,
   SafeAreaView,
+
 } from 'react-native';
 
 import StartTitle from '../assets/startTitle.svg';
 import React from 'react';
 import MaIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ImageBackground} from 'react-native';
 
 const StartScreen = ({navigation}) => {
+  React.useEffect(() => {
+    AsyncStorage.getItem('@sp_dc').then(value => {
+      if (value) {
+        navigation.navigate('Home');
+      }
+    });
+  }, []);
+
   return (
     <ImageBackground source={require('../assets/start.png')} style={{flex: 1}}>
-      <SafeAreaView className="">
+      <SafeAreaView>
         <View className="h-full">
           <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
           <View className="top-[100px]">

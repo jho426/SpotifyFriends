@@ -47,7 +47,6 @@ const ActivityScreen = ({navigation}) => {
 
   React.useEffect(() => {
     fetchActivityData();
-
     const interval = setInterval(startRefresh, 120000);
 
     return () => clearInterval(interval);
@@ -67,7 +66,14 @@ const ActivityScreen = ({navigation}) => {
         <ScrollView
           className="bg-[#121212] h-full"
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            <RefreshControl
+              tintColor={'transparent'}
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={['transparent']}
+              style={{backgroundColor: 'transparent'}}
+              progressBackgroundColor="transparent"
+            />
           }>
           {refreshing ? (
             <View style={styles.loadingContainer}>
@@ -195,7 +201,9 @@ const ActivityScreen = ({navigation}) => {
                 <View
                   className="h-[100px] flex flex-row gap-4 text-ellipsis px-2"
                   key={item?.id}>
-                  <View className="h-[50px] w-[50px] my-auto self-center" key={item?.id}>
+                  <View
+                    className="h-[50px] w-[50px] my-auto self-center"
+                    key={item?.id}>
                     {item?.timedifference === 'Now' && (
                       <View
                         className="absolute left-[40px] border z-10"
@@ -224,7 +232,9 @@ const ActivityScreen = ({navigation}) => {
                       />
                     )}
                   </View>
-                  <View className="flex flex-col gap-1 w-[220px]" key={item?.id}>
+                  <View
+                    className="flex flex-col gap-1 w-[220px]"
+                    key={item?.id}>
                     {item?.user?.name && (
                       <Text
                         className="text-white font-bold"
@@ -244,7 +254,10 @@ const ActivityScreen = ({navigation}) => {
                           {item.track.name}
                         </Text>
                       )}
-                      <View className="rounded-full bg-white my-auto mx-[4px] w-[4px] h-[4px]" key={item?.id}/>
+                      <View
+                        className="rounded-full bg-white my-auto mx-[4px] w-[4px] h-[4px]"
+                        key={item?.id}
+                      />
                       {item?.track?.artist?.name && (
                         <Text
                           className="text-white max-w-[50%]"

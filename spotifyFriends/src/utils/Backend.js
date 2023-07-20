@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useState, createContext, useMemo} from 'react';
 import CookieManager from '@react-native-cookies/cookies';
 
@@ -23,16 +24,20 @@ export const BackendProvider = ({children}) => {
         return false;
       }
 
+      console.log('sp_dc cookie:', spDcCookie);
+
       const accessToken = await getAccessToken(spDcCookie);
 
-      if (accessToken === null) {
+      if (accessToken == null) {
         console.log('access_token not found');
         return false;
       }
 
+      console.log('access_token:', accessToken);
+
       const friendActivity = await getActivity(accessToken);
 
-      if (friendActivity === null) {
+      if (friendActivity == null) {
         console.log('friendActivity not found');
         return false;
       }
@@ -41,15 +46,19 @@ export const BackendProvider = ({children}) => {
 
       const userInfo = await getUserProfile(accessToken);
 
-      if (userInfo === null) {
+      if (userInfo == null) {
         console.log('userInfo not found');
         return false;
       }
 
-      // Step 3: Get your own activity using the access token and user profile
       await getYourActivity(accessToken, userInfo);
 
-      // Print a message indicating the process is complete
+      if (yourActivity == null) {
+        console.log('yourActivity not found');
+        return false;
+      }
+
+      await AsyncStorage.setItem('@sp_dc', spDcCookie);
       console.log('BOOM!');
       return true;
     } catch (error) {
@@ -89,9 +98,21 @@ export const BackendProvider = ({children}) => {
    */
   const getSpDcCookie = async () => {
     try {
+      const spDcCookie = await AsyncStorage.getItem('@sp_dc');
+      console.log('sp_dc cookie:', spDcCookie);
+      if (spDcCookie != null) {
+        console.log('sp_dc cookie found from async storage');
+        return spDcCookie;
+      }
+    } catch (error) {
+      console.error('Error retrieving sp_dc cookie:', error);
+    }
+
+    console.log('cookie manager');
+
+    try {
       const cookies = await CookieManager.getAll(true);
 
-      // Check if cookies exist and contain the "sp_dc" property with a "value" property.
       if (cookies?.sp_dc?.value) {
         return cookies.sp_dc.value;
       } else {

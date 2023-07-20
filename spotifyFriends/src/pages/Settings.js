@@ -1,17 +1,14 @@
 import {View, Text, TouchableOpacity, SafeAreaView} from 'react-native';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import React, {useContext} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {BackendContext} from '../utils/Backend';
 
 const SettingsScreen = ({navigation}) => {
-  const {
-    hardClearCookies,
-    yourActivity,
-    friendsArray,
-    setFriendsArray,
-    setYourActivity,
-  } = useContext(BackendContext);
+  const {hardClearCookies, setFriendsArray, setYourActivity} =
+    useContext(BackendContext);
+
   return (
     <>
       <SafeAreaView className="bg-[#121212]">
@@ -21,6 +18,8 @@ const SettingsScreen = ({navigation}) => {
               await hardClearCookies();
               await setYourActivity({});
               await setFriendsArray([]);
+              await AsyncStorage.removeItem('@sp_dc');
+              console.log(await AsyncStorage.getItem('@sp_dc'));
               navigation.navigate('Start');
             }}
             style={{
