@@ -4,14 +4,13 @@ import {
   TouchableOpacity,
   StatusBar,
   SafeAreaView,
-
+  ImageBackground
 } from 'react-native';
 
 import StartTitle from '../assets/startTitle.svg';
 import React from 'react';
 import MaIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ImageBackground} from 'react-native';
 
 const StartScreen = ({navigation}) => {
   React.useEffect(() => {
