@@ -17,3 +17,6 @@ Created by Dorian Chen & Jacqueline Ho
 ## Architecture
 
 ![Mind Maps](https://github.com/jho426/SpotifyFriends/assets/75771131/8d464983-7b9c-41c2-b718-859b68f7588f)
+
+## Try out Spotify Friends!
+App store: https://apps.apple.com/ca/app/listening-activity-for-spotify/id6451445133
